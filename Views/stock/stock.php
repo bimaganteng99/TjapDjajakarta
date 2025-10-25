@@ -1,0 +1,22 @@
+<?php
+// (Pastikan session_start() sudah ada di index.php)
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'staff') {
+    header('Location: index.php?action=login');
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Staff</title>
+</head>
+<body>
+    <h1>Selamat Bekerja, <?= htmlspecialchars($_SESSION['user_username']); ?>!</h1>
+    <h2>Ini Halaman Dashboard Staff Pengadaan</h2>
+    <p>Di sini nanti kamu bisa arahkan ke halaman sesuai tugas staff.</p>
+    
+    <br>
+    <a href="index.php?action=logout">Logout</a>
+</body>
+</html>
