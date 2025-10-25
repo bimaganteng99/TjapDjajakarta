@@ -6,4 +6,5 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'admin123'); // <-- Ini password-mu
 define('DB_NAME', 'TjapDjajakarta');
+define('DB_PORT', '3307');
 ?>
