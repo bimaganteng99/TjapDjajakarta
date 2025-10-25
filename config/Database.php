@@ -2,7 +2,7 @@
 // config/Database.php
 
 // Panggil file konfigurasi lokal
-require_once 'koneksi-lokal.php';
+require_once 'koneksi_lokal.php';
 
 class Database {
     // Ambil data dari file koneksi-lokal.php
