@@ -41,4 +41,13 @@ class PesananModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateStatusPesanan($id_pesanan, $status_pesanan)
+    {
+        $query = "UPDATE {$this->table} SET status_pesanan = :status_pesanan WHERE id_pesanan = :id_pesanan";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':status_pesanan', $status_pesanan);
+        $stmt->bindParam(':id_pesanan', $id_pesanan);
+        return $stmt->execute();
+    }
 }

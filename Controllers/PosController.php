@@ -36,10 +36,6 @@ class PosController
 
     public function tambahPesanan()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');
             exit;
@@ -48,13 +44,21 @@ class PosController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_user = $_SESSION['user_id'];
             $id_menu = $_POST['id_menu'] ?? null;
-            $jumlah = $_POST['jumlah'] ?? 0;
-            $total_harga = $_POST['total_harga'] ?? 0;
+            $jumlah = (int) ($_POST['jumlah'] ?? 0);
             $jenis_pesanan = $_POST['jenis_pesanan'] ?? '';
             $catatan = $_POST['catatan'] ?? '';
 
-            $pesananModel = new PesananModel($this->db);
-            $result = $pesananModel->tambahPesanan(
+            // Ambil harga menu dari database
+            $menu = $this->menuModel->getMenuById($id_menu);
+            if (!$menu) {
+                echo "<script>alert('Menu tidak ditemukan!'); history.back();</script>";
+                exit;
+            }
+
+            $harga = $menu['harga'];
+            $total_harga = $jumlah * $harga;
+
+            $result = $this->pesananModel->tambahPesanan(
                 $id_user,
                 $id_menu,
                 $jumlah,

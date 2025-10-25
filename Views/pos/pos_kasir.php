@@ -96,30 +96,28 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
     <h2>Halaman POS Kasir</h2>
 
     <form action="index.php?action=tambah_pesanan" method="POST">
-        <label>Pilih Menu:</label>
-        <select name="id_menu" required>
-            <option value="">-- Pilih Menu --</option>
+        <label for="menu">Menu:</label>
+        <select name="id_menu" id="menu" required>
             <?php foreach ($menus as $menu): ?>
-                <option value="<?= $menu['id_menu'] ?>"><?= $menu['nama'] ?> - Rp<?= $menu['harga'] ?></option>
+                <option value="<?= $menu['id_menu'] ?>" data-harga="<?= $menu['harga'] ?>">
+                    <?= $menu['nama'] ?> - Rp<?= number_format($menu['harga']) ?>
+                </option>
             <?php endforeach; ?>
-        </select><br>
+        </select>
 
-        <label>Jumlah:</label>
-        <input type="number" name="jumlah" min="1" value="1" required><br>
+        <label for="jumlah">Jumlah:</label>
+        <input type="number" name="jumlah" id="jumlah" value="1" min="1" required>
 
-        <label>Jenis Pesanan:</label>
-        <select name="jenis_pesanan" required>
-            <option value="dine in">Dine-In</option>
+        <label for="jenis_pesanan">Jenis Pesanan:</label>
+        <select name="jenis_pesanan" id="jenis_pesanan" required>
+            <option value="dine in">Dine In</option>
             <option value="delivery">Delivery</option>
-        </select><br>
+        </select>
 
-        <label>Catatan:</label>
-        <textarea name="catatan" placeholder="Opsional"></textarea><br>
+        <label for="catatan">Catatan:</label>
+        <input type="text" name="catatan" id="catatan">
 
-        <label>Total:</label>
-        <input type="number" name="total" placeholder="Total harga" required><br>
-
-        <button type="submit">Simpan Pesanan</button>
+        <button type="submit">Tambah Pesanan</button>
     </form>
 
     <hr>

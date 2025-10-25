@@ -9,12 +9,14 @@ require_once './controllers/AuthController.php';
 require_once './controllers/MenuController.php';
 require_once './controllers/PosController.php';
 require_once './controllers/PesananController.php';
+include_once './controllers/StatusController.php';
 
 
 $authController = new AuthController();
 $menuController = new MenuController();
 $posController = new PosController();
 $pesananController = new PesananController();
+$statusController = new StatusController();
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -83,13 +85,17 @@ switch ($action) {
         $pesananController->showPesananForm();
         break;
 
-    // case 'tambah_pemesanan':
-    //     $pesananController->handleTambahPesanan();
-    //     break;
-
     case 'tambah_pesanan':
         $controller = new PosController();
         $controller->tambahPesanan();
+        break;
+
+    case 'dashboardStaffOperasional':
+        $authController->showDashboardStaffOperasional();
+        break;
+
+    case 'update_status_pesanan':
+        $statusController->updateStatusPesanan();
         break;
 
     default:

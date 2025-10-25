@@ -46,4 +46,12 @@ class MenuModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getMenuById($id_menu)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM menu WHERE id_menu = :id_menu");
+        $stmt->bindParam(':id_menu', $id_menu);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

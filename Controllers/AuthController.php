@@ -14,15 +14,14 @@ class AuthController
     private $db;
     private $userModel;
     private $menuModel;
+    private $pesananModel;
 
     public function __construct()
     {
-        // if (session_status() == PHP_SESSION_NONE) {
-        //     session_start();
-        // }
         $database = new Database();
         $this->db = $database->getConnection();
         $this->userModel = new User($this->db);
+        $this->pesananModel = new PesananModel($this->db);
     }
 
     public function showLogin()
@@ -107,15 +106,15 @@ class AuthController
                     header('Location: index.php?action=dashboardAdmin');
                 } elseif ($user['role'] == 'manajer') {
                     header('Location: index.php?action=dashboardManajer');
-                } elseif ($user['role'] == 'staffoperasional') {
+                } elseif ($user['role'] == 'operasional') {
                     header('Location: index.php?action=dashboardStaffOperasional');
                 } elseif ($user['role'] == 'kasir') {
                     header('Location: index.php?action=pos_kasir');
-                } elseif ($user['role'] == 'staffpengadaan') {
+                } elseif ($user['role'] == 'pengadaan') {
                     header('Location: index.php?action=dashboardStaffPengadaan');
                 } elseif ($user['role'] == 'cs') {
                     header('Location: index.php?action=dashboardCS');
-                } elseif ($user['role'] == 'staffmarketing') {
+                } elseif ($user['role'] == 'marketing') {
                     header('Location: index.php?action=dashboardStaffMarketing');
                 }
                 exit();
@@ -186,8 +185,6 @@ class AuthController
         include './views/manajemen/manajemen_menu.php';
     }
 
-
-
     // kasir
     public function showPembayaran()
     {
@@ -211,6 +208,20 @@ class AuthController
             header('Location: index.php?action=login');
             exit();
         }
+        include './views/statuspesanan/status_pesanan.php';
+    }
+
+    //operasional
+    public function showDashboardStaffOperasional()
+    {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'operasional') {
+            header('Location: index.php?action=login');
+            exit();
+        }
+
+        // Ambil semua pesanan terbaru
+        $pesanan = $this->pesananModel->getAllPesanan();
+
         include './views/statuspesanan/status_pesanan.php';
     }
 }

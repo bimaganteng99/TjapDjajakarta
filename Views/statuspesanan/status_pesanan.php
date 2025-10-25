@@ -1,6 +1,6 @@
 <?php
 // (Pastikan session_start() sudah ada di index.php)
-$allowed_roles = ['kasir', 'operasional'];
+$allowed_roles = ['operasional'];
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_roles)) {
     header('Location: index.php?action=login');
     exit();
@@ -9,18 +9,69 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Staff</title>
 </head>
+
 <body>
     <?php include './views/layout/navbar.php'; ?>
 
-    <h1>Selamat Bekerja, <?= htmlspecialchars($_SESSION['user_username']); ?>!</h1>
-    <h2>Ini Halaman Dashboard Staff Operasional</h2>
-    <p>Di sini nanti kamu bisa arahkan ke halaman sesuai tugas staff.</p>
-    
-    <br>
-    <a href="index.php?action=logout">Logout</a>
+    <h2>Status Pesanan</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Pesanan</th>
+                <th>Menu</th>
+                <th>Jumlah</th>
+                <th>Total Harga</th>
+                <th>Jenis Pesanan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="daftar-pesanan">
+            <?php foreach ($pesanan as $p): ?>
+                <tr>
+                    <td><?= $p['id_pesanan'] ?></td>
+                    <td><?= $p['nama_menu'] ?></td>
+                    <td><?= $p['jumlah'] ?></td>
+                    <td>Rp<?= number_format($p['total_harga']) ?></td>
+                    <td><?= $p['jenis_pesanan'] ?></td>
+                    <td id="status-<?= $p['id_pesanan'] ?>"><?= $p['status_pesanan'] ?></td>
+                    <td>
+                        <select onchange="updateStatus(<?= $p['id_pesanan'] ?>, this.value)">
+                            <option value="menunggu" <?= $p['status_pesanan'] == 'menunggu' ? 'selected' : '' ?>>Menunggu</option>
+                            <option value="proses" <?= $p['status_pesanan'] == 'proses' ? 'selected' : '' ?>>Proses</option>
+                            <option value="selesai" <?= $p['status_pesanan'] == 'selesai' ? 'selected' : '' ?>>Selesai</option>
+                        </select>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <script>
+        function updateStatus(id_pesanan, status_pesanan) {
+            fetch('index.php?action=update_status_pesanan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'id_pesanan=' + id_pesanan + '&status_pesanan=' + status_pesanan
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('status-' + id_pesanan).innerText = status;
+                    } else {
+                        alert('Gagal update status!');
+                    }
+                });
+        }
+    </script>
+
 </body>
+
 </html>
