@@ -1,10 +1,15 @@
 <?php
 // config/Database.php
+
+// Panggil file konfigurasi lokal
+require_once 'koneksi_lokal.php';
+
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'TjapDjajakarta'; // Sesuaikan nama DB
-    private $username = 'root'; // Sesuaikan username DB
-    private $password = ''; // Sesuaikan password DB
+    // Ambil data dari file koneksi-lokal.php
+    private $host = DB_HOST;
+    private $db_name = DB_NAME;
+    private $username = DB_USER;
+    private $password = DB_PASS;
     public $conn;
 
     public function getConnection() {
