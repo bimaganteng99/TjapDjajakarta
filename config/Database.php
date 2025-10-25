@@ -4,7 +4,7 @@ class Database {
     private $host = 'localhost';
     private $db_name = 'TjapDjajakarta'; // Sesuaikan nama DB
     private $username = 'root'; // Sesuaikan username DB
-    private $password = 'admin123'; // Sesuaikan password DB
+    private $password = ''; // Sesuaikan password DB
     public $conn;
 
     public function getConnection() {
