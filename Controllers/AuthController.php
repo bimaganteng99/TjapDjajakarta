@@ -210,18 +210,4 @@ class AuthController
         }
         include './views/statuspesanan/status_pesanan.php';
     }
-
-    //operasional
-    public function showDashboardStaffOperasional()
-    {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'operasional') {
-            header('Location: index.php?action=login');
-            exit();
-        }
-
-        // Ambil semua pesanan terbaru
-        $pesanan = $this->pesananModel->getAllPesanan();
-
-        include './views/statuspesanan/status_pesanan.php';
-    }
 }

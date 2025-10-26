@@ -1,5 +1,5 @@
 <?php
-$allowed_roles = ['kasir'];
+$allowed_roles = ['kasir', 'operasional'];
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_roles)) {
     header('Location: index.php?action=login');
     exit();
@@ -133,18 +133,82 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
             <th>Status</th>
             <th>Catatan</th>
         </tr>
-        <?php foreach ($this->pesananModel->getAllPesanan() as $pesanan): ?>
+        <?php foreach ($daftar_pesanan as $pesanan): ?>
             <tr>
                 <td><?= $pesanan['id_pesanan'] ?></td>
                 <td><?= $pesanan['nama_menu'] ?></td>
                 <td><?= $pesanan['jumlah'] ?></td>
                 <td><?= $pesanan['total_harga'] ?></td>
                 <td><?= $pesanan['jenis_pesanan'] ?></td>
-                <td><?= $pesanan['status_pesanan'] ?></td>
+                <td id="status-kasir-<?= $pesanan['id_pesanan'] ?>"><?= $pesanan['status_pesanan'] ?></td>
                 <td><?= $pesanan['catatan'] ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
+
+    <script>
+        // Jalankan fungsi fetchUpdates() setiap 5 detik (5000 milidetik)
+        setInterval(fetchUpdates, 5000);
+
+        // Fungsi untuk memanggil API
+        function fetchUpdates() {
+
+            // =========================================================
+            // UBAH ACTION DI SINI
+            // =========================================================
+            fetch('index.php?action=get_pesanan_updates') // <-- Diubah ke action baru
+                .then(response => response.json())
+                .then(dataPesananBaru => {
+                    // Panggil fungsi untuk membandingkan dan update tabel
+                    perbaruiTabel(dataPesananBaru);
+                })
+                .catch(error => {
+                    console.error('Error polling:', error);
+                });
+        }
+
+        // Fungsi untuk membandingkan data baru dengan tabel HTML
+        function perbaruiTabel(dataPesananBaru) {
+
+            dataPesananBaru.forEach(pesanan => {
+                let id = pesanan.id_pesanan;
+                let statusBaru = pesanan.status_pesanan;
+
+                // PENTING: Sesuaikan ID <td> status di tabel HTML-mu
+                let tdStatus = document.getElementById('status-kasir-' + id);
+
+                if (tdStatus) {
+                    let statusBaruDiTabel = tdStatus.innerText;
+
+                    // Cek apakah statusnya berbeda?
+                    if (statusBaruDiTabel !== statusBaru) {
+
+                        // 1. Update teks status di tabel
+                        tdStatus.innerText = statusBaru;
+
+                        // (Opsional) Beri highlight baris
+                        tdStatus.parentElement.style.backgroundColor = '#fff3cd'; // Kuning
+
+                        // 2. Tampilkan notifikasi
+                        showNotification('Pesanan ID #' + id + ' kini statusnya: ' + statusBaru);
+                    }
+                }
+            });
+        }
+
+        // Fungsi (Opsional) untuk menampilkan notifikasi toast
+        function showNotification(message) {
+            let toast = document.getElementById("toast-notification");
+            toast.innerText = message;
+            toast.className = "show";
+            setTimeout(function() {
+                toast.className = toast.className.replace("show", "");
+            }, 3000);
+        }
+
+        // (Panggil sekali saat halaman baru dimuat)
+        document.addEventListener('DOMContentLoaded', fetchUpdates);
+    </script>
 </body>
 
 </html>

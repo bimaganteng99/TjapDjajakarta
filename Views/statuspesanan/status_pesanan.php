@@ -5,6 +5,9 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
     header('Location: index.php?action=login');
     exit();
 }
+if (!isset($pesanan) || !is_array($pesanan)) {
+    $pesanan = [];
+}
 
 ?>
 <!DOCTYPE html>
@@ -43,8 +46,9 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
                     <td>
                         <select onchange="updateStatus(<?= $p['id_pesanan'] ?>, this.value)">
                             <option value="menunggu" <?= $p['status_pesanan'] == 'menunggu' ? 'selected' : '' ?>>Menunggu</option>
-                            <option value="proses" <?= $p['status_pesanan'] == 'proses' ? 'selected' : '' ?>>Proses</option>
+                            <option value="diproses" <?= $p['status_pesanan'] == 'diproses' ? 'selected' : '' ?>>Proses</option>
                             <option value="selesai" <?= $p['status_pesanan'] == 'selesai' ? 'selected' : '' ?>>Selesai</option>
+                            <option value="batal" <?= $p['status_pesanan'] == 'batal' ? 'selected' : '' ?>>Batal</option>
                         </select>
                     </td>
                 </tr>
@@ -64,7 +68,8 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.getElementById('status-' + id_pesanan).innerText = status;
+                        // Ini sudah benar
+                        document.getElementById('status-' + id_pesanan).innerText = status_pesanan;
                     } else {
                         alert('Gagal update status!');
                     }

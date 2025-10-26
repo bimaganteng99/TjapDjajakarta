@@ -13,9 +13,10 @@ class PesananModel
     // Tambah pesanan baru
     public function tambahPesanan($id_akun, $id_menu, $jumlah, $total_harga, $jenis_pesanan, $catatan)
     {
+        // (Saya asumsikan kode ini sudah ada dan benar)
         $query = "INSERT INTO {$this->table} 
-              (id_akun, id_menu, jumlah, total_harga, jenis_pesanan, catatan, status_pesanan, created_at)
-              VALUES (:id_akun, :id_menu, :jumlah, :total_harga, :jenis_pesanan, :catatan, 'menunggu', NOW())";
+                  (id_akun, id_menu, jumlah, total_harga, jenis_pesanan, catatan, status_pesanan, created_at)
+                  VALUES (:id_akun, :id_menu, :jumlah, :total_harga, :jenis_pesanan, :catatan, 'menunggu', NOW())";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id_akun', $id_akun);
@@ -28,26 +29,48 @@ class PesananModel
         return $stmt->execute();
     }
 
-
     // Ambil semua pesanan
     public function getAllPesanan()
     {
+        // Query ini mengambil semua pesanan dan menggabungkannya dengan tabel 'menu'
+        // untuk mendapatkan 'nama_menu'
         $query = "SELECT p.*, m.nama AS nama_menu, m.harga 
                   FROM {$this->table} p
                   JOIN menu m ON p.id_menu = m.id_menu
                   ORDER BY p.created_at DESC";
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
+        // fetchAll() akan mengembalikan array (meskipun kosong)
+        // Ini akan memperbaiki error 'null'
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateStatusPesanan($id_pesanan, $status_pesanan)
     {
         $query = "UPDATE {$this->table} SET status_pesanan = :status_pesanan WHERE id_pesanan = :id_pesanan";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':status_pesanan', $status_pesanan);
-        $stmt->bindParam(':id_pesanan', $id_pesanan);
-        return $stmt->execute();
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            // Perbaikan Tipe Data: Paksa id_pesanan sebagai Angka (Integer)
+            $stmt->bindParam(':id_pesanan', $id_pesanan, PDO::PARAM_INT);
+
+            // Status tetap sebagai string (sudah benar)
+            $stmt->bindParam(':status_pesanan', $status_pesanan, PDO::PARAM_STR);
+
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }

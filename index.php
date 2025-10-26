@@ -10,6 +10,7 @@ require_once './controllers/MenuController.php';
 require_once './controllers/PosController.php';
 require_once './controllers/PesananController.php';
 include_once './controllers/StatusController.php';
+include_once './controllers/NotificationController.php';
 
 
 $authController = new AuthController();
@@ -17,6 +18,7 @@ $menuController = new MenuController();
 $posController = new PosController();
 $pesananController = new PesananController();
 $statusController = new StatusController();
+$notificationController = new NotificationController();
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -65,7 +67,7 @@ switch ($action) {
         $authController->showVerfikasiPickUp();
         break;
     case 'status_pesanan':
-        $authController->showStatusPesanan();
+        $statusController->showStatusPage();
         break;
 
     // MENU
@@ -90,8 +92,13 @@ switch ($action) {
         $controller->tambahPesanan();
         break;
 
+    case 'get_pesanan_updates':
+        $notificationController->getPesananUpdates();
+        break;
+
     case 'dashboardStaffOperasional':
-        $authController->showDashboardStaffOperasional();
+        // INI YANG BENAR
+        $statusController->showStatusPage();
         break;
 
     case 'update_status_pesanan':

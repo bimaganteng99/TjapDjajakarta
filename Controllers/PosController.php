@@ -30,6 +30,7 @@ class PosController
 
         // Ambil semua menu dari DB
         $menus = $this->menuModel->getAllMenus();
+        $daftar_pesanan = $this->pesananModel->getAllPesanan();
 
         include './views/pos/pos_kasir.php';
     }
@@ -77,4 +78,5 @@ class PosController
             include './views/pos/tambah_pesanan.php';
         }
     }
+
 }
