@@ -11,14 +11,18 @@ class PesananModel
     }
 
     // Tambah pesanan baru
-    public function tambahPesanan($id_akun, $id_menu, $jumlah, $total_harga, $jenis_pesanan, $catatan)
+    // 1. Tambahkan $kode_pesanan di parameter
+    public function tambahPesanan($id_akun, $id_menu, $jumlah, $total_harga, $jenis_pesanan, $catatan, $kode_pesanan)
     {
-        // (Saya asumsikan kode ini sudah ada dan benar)
+        // 2. Tambahkan 'kode_pesanan' di query
         $query = "INSERT INTO {$this->table} 
-                  (id_akun, id_menu, jumlah, total_harga, jenis_pesanan, catatan, status_pesanan, created_at)
-                  VALUES (:id_akun, :id_menu, :jumlah, :total_harga, :jenis_pesanan, :catatan, 'menunggu', NOW())";
+                  (kode_pesanan, id_akun, id_menu, jumlah, total_harga, jenis_pesanan, catatan, status_pesanan, created_at)
+                  VALUES (:kode_pesanan, :id_akun, :id_menu, :jumlah, :total_harga, :jenis_pesanan, :catatan, 'menunggu', NOW())";
 
         $stmt = $this->conn->prepare($query);
+
+        // 3. Bind parameter baru
+        $stmt->bindParam(':kode_pesanan', $kode_pesanan);
         $stmt->bindParam(':id_akun', $id_akun);
         $stmt->bindParam(':id_menu', $id_menu);
         $stmt->bindParam(':jumlah', $jumlah);
@@ -72,5 +76,24 @@ class PesananModel
         } catch (PDOException $e) {
             return false;
         }
+    }
+
+    public function findByKode($kode_pesanan)
+    {
+        $query = "SELECT p.*, m.nama AS nama_menu
+                  FROM {$this->table} p
+                  JOIN menu m ON p.id_menu = m.id_menu
+                  WHERE p.kode_pesanan = :kode_pesanan
+                  LIMIT 1";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':kode_pesanan', $kode_pesanan, PDO::PARAM_STR);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        return null; // Kembalikan null jika tidak ada
     }
 }

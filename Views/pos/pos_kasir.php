@@ -126,6 +126,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
     <table border="1" cellpadding="5">
         <tr>
             <th>ID</th>
+            <th>Kode</th>   
             <th>Menu</th>
             <th>Jumlah</th>
             <th>Total</th>
@@ -136,6 +137,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
         <?php foreach ($daftar_pesanan as $pesanan): ?>
             <tr>
                 <td><?= $pesanan['id_pesanan'] ?></td>
+                <td><?= $pesanan['kode_pesanan'] ?></td>
                 <td><?= $pesanan['nama_menu'] ?></td>
                 <td><?= $pesanan['jumlah'] ?></td>
                 <td><?= $pesanan['total_harga'] ?></td>

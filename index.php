@@ -11,6 +11,7 @@ require_once './controllers/PosController.php';
 require_once './controllers/PesananController.php';
 include_once './controllers/StatusController.php';
 include_once './controllers/NotificationController.php';
+require_once './controllers/VerifikasiController.php';
 
 
 $authController = new AuthController();
@@ -19,6 +20,7 @@ $posController = new PosController();
 $pesananController = new PesananController();
 $statusController = new StatusController();
 $notificationController = new NotificationController();
+$verifikasiController = new VerifikasiController();
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -64,7 +66,7 @@ switch ($action) {
         $authController->showPembayaran();
         break;
     case 'verifikasi_pickup':
-        $authController->showVerfikasiPickUp();
+        $verifikasiController->showVerifikasiPage(); // Panggil method baru
         break;
     case 'status_pesanan':
         $statusController->showStatusPage();
@@ -103,6 +105,10 @@ switch ($action) {
 
     case 'update_status_pesanan':
         $statusController->updateStatusPesanan();
+        break;
+
+    case 'konfirmasi_pickup':
+        $verifikasiController->konfirmasiPesanan();
         break;
 
     default:

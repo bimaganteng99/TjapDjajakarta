@@ -54,4 +54,13 @@ class MenuModel
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function findById($id_menu)
+    {
+        $query = "SELECT * FROM " . $this->table . " WHERE id_menu = :id_menu LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_menu', $id_menu, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

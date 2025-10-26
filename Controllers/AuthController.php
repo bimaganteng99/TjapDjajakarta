@@ -194,14 +194,14 @@ class AuthController
         }
         include './views/pembayaran/pembayaran.php';
     }
-    public function showVerfikasiPickUp()
-    {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
-            header('Location: index.php?action=login');
-            exit();
-        }
-        include './views/verifikasipickup/verifikasi_pickup.php';
-    }
+    // public function showVerfikasiPickUp()
+    // {
+    //     if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
+    //         header('Location: index.php?action=login');
+    //         exit();
+    //     }
+    //     include './views/verifikasipickup/verifikasi_pickup.php';
+    // }
     public function showStatusPesanan()
     {
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
