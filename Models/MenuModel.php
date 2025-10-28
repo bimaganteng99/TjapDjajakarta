@@ -4,63 +4,82 @@ class MenuModel
     private $conn;
     private $table = 'menu';
 
-    public function __construct($db)
-    {
-        $this->conn = $db;
-    }
+    public function __construct($db) { $this->conn = $db; }
 
+    /** Ambil semua menu – jangan tarik BLOB besar untuk list.
+        Pakai flag has_gambar biar ringan. */
     public function getAllMenus()
     {
-        $query = "SELECT * FROM menu ORDER BY nama ASC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = "SELECT id_menu, nama, harga, status, deskripsi,
+                       (gambar IS NOT NULL) AS has_gambar
+                FROM {$this->table}
+                ORDER BY nama ASC";
+        $st = $this->conn->prepare($sql);
+        $st->execute();
+        return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addMenu($nama, $harga, $status, $deskripsi, $gambar)
+    /** Ambil satu menu (termasuk BLOB) */
+    public function getMenuById($id_menu)
     {
-        $query = "INSERT INTO {$this->table} (nama, harga, status, deskripsi, gambar, created_at)
-                  VALUES (:nama, :harga, :status, :deskripsi, :gambar, NOW())";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nama', $nama);
-        $stmt->bindParam(':harga', $harga);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':deskripsi', $deskripsi);
-        $stmt->bindParam(':gambar', $gambar);
-        return $stmt->execute();
+        $sql = "SELECT * FROM {$this->table} WHERE id_menu = :id LIMIT 1";
+        $st  = $this->conn->prepare($sql);
+        $st->bindParam(':id', $id_menu, PDO::PARAM_INT);
+        $st->execute();
+        return $st->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /** Insert menu dengan BLOB */
+    public function addMenuBlob($nama, $harga, $status, $deskripsi, $blob)
+    {
+        $sql = "INSERT INTO {$this->table}
+                (nama, harga, status, deskripsi, gambar, created_at)
+                VALUES (:n,:h,:s,:d,:g,NOW())";
+        $st = $this->conn->prepare($sql);
+        $st->bindParam(':n', $nama);
+        $st->bindParam(':h', $harga);
+        $st->bindParam(':s', $status);
+        $st->bindParam(':d', $deskripsi);
+        // penting: simpan sebagai LOB
+        $st->bindParam(':g', $blob, PDO::PARAM_LOB);
+        return $st->execute();
     }
 
     public function deleteMenu($id)
     {
-        $query = "DELETE FROM {$this->table} WHERE id_menu = :id_menu";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_menu', $id);
-        return $stmt->execute();
-    }
-    // models/MenuModel.php
-
-    public function getAvailableMenus()
-    {
-        $query = "SELECT * FROM menu WHERE status = 'tersedia'";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $st = $this->conn->prepare("DELETE FROM {$this->table} WHERE id_menu = :id");
+        $st->bindParam(':id', $id, PDO::PARAM_INT);
+        return $st->execute();
     }
 
-    public function getMenuById($id_menu)
+    public function updateMenuAll($id, $nama, $harga, $status, $deskripsi, $blob = null)
     {
-        $stmt = $this->conn->prepare("SELECT * FROM menu WHERE id_menu = :id_menu");
-        $stmt->bindParam(':id_menu', $id_menu);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($blob === null) {
+            // update tanpa menyentuh kolom BLOB
+            $sql = "UPDATE {$this->table}
+                    SET nama = :n, harga = :h, status = :s, deskripsi = :d
+                    WHERE id_menu = :id";
+            $st  = $this->conn->prepare($sql);
+            $st->bindParam(':n', $nama);
+            $st->bindParam(':h', $harga);
+            $st->bindParam(':s', $status);
+            $st->bindParam(':d', $deskripsi);
+            $st->bindParam(':id', $id, PDO::PARAM_INT);
+            return $st->execute();
+        } else {
+            // update + ganti gambar (BLOB)
+            $sql = "UPDATE {$this->table}
+                    SET nama = :n, harga = :h, status = :s, deskripsi = :d, gambar = :g
+                    WHERE id_menu = :id";
+            $st  = $this->conn->prepare($sql);
+            $st->bindParam(':n', $nama);
+            $st->bindParam(':h', $harga);
+            $st->bindParam(':s', $status);
+            $st->bindParam(':d', $deskripsi);
+            $st->bindParam(':g', $blob, PDO::PARAM_LOB);
+            $st->bindParam(':id', $id, PDO::PARAM_INT);
+            return $st->execute();
+        }
     }
 
-    public function findById($id_menu)
-    {
-        $query = "SELECT * FROM " . $this->table . " WHERE id_menu = :id_menu LIMIT 1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_menu', $id_menu, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 }

@@ -80,6 +80,19 @@ switch ($action) {
         $menuController->handleMenuAction();
         break;
 
+    case 'image_menu':            // STREAM gambar dari BLOB
+        $menuController->streamMenuImage();
+    break;
+
+    case 'edit_menu':
+        $menuController->showEditMenu();      // form edit
+    break;
+
+    case 'update_menu':
+        $menuController->updateMenu();        // submit edit
+    break;
+
+
     // POS
     case 'pos_kasir':
         $posController->showPOSKasir();
