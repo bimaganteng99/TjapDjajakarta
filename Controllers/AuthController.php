@@ -101,7 +101,7 @@ class AuthController
                 $_SESSION['user_username'] = $user['username'];
 
                 if ($user['role'] == 'pelanggan') {
-                    header('Location: index.php?action=dashboardPelanggan');
+                    header('Location: index.php?action=pos_kasir');
                 } elseif ($user['role'] == 'admin') {
                     header('Location: index.php?action=dashboardAdmin');
                 } elseif ($user['role'] == 'manajer') {
@@ -134,14 +134,14 @@ class AuthController
     }
 
     // pelanggan
-    public function showDashboardPelanggan()
-    {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pelanggan') {
-            header('Location: index.php?action=login');
-            exit();
-        }
-        include './views/pemesanan/pemesanan.php';
-    }
+    // public function showDashboardPelanggan()
+    // {
+    //     if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pelanggan') {
+    //         header('Location: index.php?action=login');
+    //         exit();
+    //     }
+    //     include './views/pemesanan/pemesanan.php';
+    // }
 
     // admin
     public function showDashboardAdmin()
@@ -194,34 +194,20 @@ class AuthController
         }
         include './views/pembayaran/pembayaran.php';
     }
-    public function showVerfikasiPickUp()
-    {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
-            header('Location: index.php?action=login');
-            exit();
-        }
-        include './views/verifikasipickup/verifikasi_pickup.php';
-    }
+    // public function showVerfikasiPickUp()
+    // {
+    //     if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
+    //         header('Location: index.php?action=login');
+    //         exit();
+    //     }
+    //     include './views/verifikasipickup/verifikasi_pickup.php';
+    // }
     public function showStatusPesanan()
     {
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
             header('Location: index.php?action=login');
             exit();
         }
-        include './views/statuspesanan/status_pesanan.php';
-    }
-
-    //operasional
-    public function showDashboardStaffOperasional()
-    {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'operasional') {
-            header('Location: index.php?action=login');
-            exit();
-        }
-
-        // Ambil semua pesanan terbaru
-        $pesanan = $this->pesananModel->getAllPesanan();
-
         include './views/statuspesanan/status_pesanan.php';
     }
 }

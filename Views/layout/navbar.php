@@ -12,11 +12,15 @@
             <li><a href="index.php?action=pos_kasir">POS</a></li>
             <li><a href="index.php?action=pembayaran">Pembayaran</a></li>
             <li><a href="index.php?action=verifikasi_pickup">Verifikasi PickUp</a></li>
-            <li><a href="index.php?action=status_pesanan">Status Pesanan</a></li>
+            <!-- <li><a href="index.php?action=status_pesanan">Status Pesanan</a></li> -->
 
         <?php elseif ($_SESSION['user_role'] == 'pelanggan'): ?>
-            <li><a href="index.php?action=pemesanan">Pesan Makanan</a></li>
+            <li><a href="index.php?action=pos_kasir">POS</a></li>
             <li><a href="index.php?action=pembayaran">Pembayaran</a></li>
+
+        <?php elseif ($_SESSION['user_role'] == 'operasional'): ?>
+            <!-- <li><a href="index.php?action=pos_kasir">POS</a></li> -->
+            <li><a href="index.php?action=status_pesanan">Status Pesanan</a></li>
 
         <?php endif; ?>
         <li><a href="index.php?action=logout">Logout</a></li>

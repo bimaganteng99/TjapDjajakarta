@@ -23,58 +23,52 @@ class PosController
 
     public function showPOSKasir()
     {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'kasir') {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'kasir' && $_SESSION['user_role'] !== 'pelanggan') {
             header('Location: index.php?action=login');
             exit();
         }
 
         // Ambil semua menu dari DB
         $menus = $this->menuModel->getAllMenus();
+        $daftar_pesanan = $this->pesananModel->getAllPesanan();
 
         include './views/pos/pos_kasir.php';
     }
 
     public function tambahPesanan()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_user = $_SESSION['user_id'];
-            $id_menu = $_POST['id_menu'] ?? null;
-            $jumlah = (int) ($_POST['jumlah'] ?? 0);
-            $jenis_pesanan = $_POST['jenis_pesanan'] ?? '';
-            $catatan = $_POST['catatan'] ?? '';
+            $id_akun = $_SESSION['user_id'];
+            $id_menu = $_POST['id_menu'];
+            $jumlah = $_POST['jumlah'];
+            $jenis_pesanan = $_POST['jenis_pesanan'];
+            $catatan = $_POST['catatan'];
 
-            // Ambil harga menu dari database
-            $menu = $this->menuModel->getMenuById($id_menu);
-            if (!$menu) {
-                echo "<script>alert('Menu tidak ditemukan!'); history.back();</script>";
-                exit;
-            }
+            // (Logika menghitung total harga)
+            // Asumsi kamu punya MenuModel untuk ambil harga
+            $menu = $this->menuModel->findById($id_menu); // Kamu perlu buat fungsi 'findById' di MenuModel
+            $total_harga = $menu['harga'] * $jumlah;
 
-            $harga = $menu['harga'];
-            $total_harga = $jumlah * $harga;
+            // =========================================================
+            // INI BAGIAN PENTING: BUAT KODE UNIK
+            // =========================================================
+            // Ini akan membuat kode acak seperti "TJD-A3F1"
+            $kode_pesanan = "TJD-" . strtoupper(substr(uniqid(), -4));
+            // =========================================================
 
-            $result = $this->pesananModel->tambahPesanan(
-                $id_user,
+
+            // Panggil model dengan parameter baru
+            $this->pesananModel->tambahPesanan(
+                $id_akun,
                 $id_menu,
                 $jumlah,
                 $total_harga,
                 $jenis_pesanan,
-                $catatan
+                $catatan,
+                $kode_pesanan // <-- Kirim kodenya
             );
-
-            if ($result) {
-                header('Location: index.php?action=pos_kasir');
-                exit;
-            } else {
-                echo "<script>alert('Gagal menambahkan pesanan!'); history.back();</script>";
-            }
-        } else {
-            include './views/pos/tambah_pesanan.php';
         }
+        header('Location: index.php?action=pos_kasir');
+        exit();
     }
 }

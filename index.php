@@ -10,6 +10,8 @@ require_once './controllers/MenuController.php';
 require_once './controllers/PosController.php';
 require_once './controllers/PesananController.php';
 include_once './controllers/StatusController.php';
+include_once './controllers/NotificationController.php';
+require_once './controllers/VerifikasiController.php';
 
 
 $authController = new AuthController();
@@ -17,6 +19,8 @@ $menuController = new MenuController();
 $posController = new PosController();
 $pesananController = new PesananController();
 $statusController = new StatusController();
+$notificationController = new NotificationController();
+$verifikasiController = new VerifikasiController();
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -50,9 +54,9 @@ switch ($action) {
     case 'dashboardManajer':
         $authController->showDashboardManajer();
         break;
-    case 'dashboardPelanggan':
-        $authController->showDashboardPelanggan();
-        break;
+    // case 'dashboardPelanggan':
+    //     $authController->showDashboardPelanggan();
+    //     break;
 
     // FITUR KHUSUS
     case 'manajemen_akun':
@@ -62,10 +66,10 @@ switch ($action) {
         $authController->showPembayaran();
         break;
     case 'verifikasi_pickup':
-        $authController->showVerfikasiPickUp();
+        $verifikasiController->showVerifikasiPage(); // Panggil method baru
         break;
     case 'status_pesanan':
-        $authController->showStatusPesanan();
+        $statusController->showStatusPage();
         break;
 
     // MENU
@@ -90,12 +94,21 @@ switch ($action) {
         $controller->tambahPesanan();
         break;
 
+    case 'get_pesanan_updates':
+        $notificationController->getPesananUpdates();
+        break;
+
     case 'dashboardStaffOperasional':
-        $authController->showDashboardStaffOperasional();
+        // INI YANG BENAR
+        $statusController->showStatusPage();
         break;
 
     case 'update_status_pesanan':
         $statusController->updateStatusPesanan();
+        break;
+
+    case 'konfirmasi_pickup':
+        $verifikasiController->konfirmasiPesanan();
         break;
 
     default:
