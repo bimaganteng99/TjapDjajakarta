@@ -8,7 +8,6 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once './controllers/AuthController.php';
 require_once './controllers/MenuController.php';
 require_once './controllers/PosController.php';
-require_once './controllers/PesananController.php';
 include_once './controllers/StatusController.php';
 include_once './controllers/NotificationController.php';
 require_once './controllers/VerifikasiController.php';
@@ -17,7 +16,6 @@ require_once './controllers/VerifikasiController.php';
 $authController = new AuthController();
 $menuController = new MenuController();
 $posController = new PosController();
-$pesananController = new PesananController();
 $statusController = new StatusController();
 $notificationController = new NotificationController();
 $verifikasiController = new VerifikasiController();

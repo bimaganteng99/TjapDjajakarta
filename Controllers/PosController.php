@@ -46,16 +46,11 @@ class PosController
 
             // (Logika menghitung total harga)
             // Asumsi kamu punya MenuModel untuk ambil harga
-            $menu = $this->menuModel->findById($id_menu); // Kamu perlu buat fungsi 'findById' di MenuModel
+            $menu = $this->menuModel->getMenuById($id_menu); // Kamu perlu buat fungsi 'findById' di MenuModel
             $total_harga = $menu['harga'] * $jumlah;
 
-            // =========================================================
-            // INI BAGIAN PENTING: BUAT KODE UNIK
-            // =========================================================
             // Ini akan membuat kode acak seperti "TJD-A3F1"
             $kode_pesanan = "TJD-" . strtoupper(substr(uniqid(), -4));
-            // =========================================================
-
 
             // Panggil model dengan parameter baru
             $this->pesananModel->tambahPesanan(
