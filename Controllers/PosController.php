@@ -46,7 +46,7 @@ class PosController
 
             // (Logika menghitung total harga)
             // Asumsi kamu punya MenuModel untuk ambil harga
-            $menu = $this->menuModel->getMenuById($id_menu); // Kamu perlu buat fungsi 'findById' di MenuModel
+            $menu = $this->menuModel->getMenuById($id_menu);
             $total_harga = $menu['harga'] * $jumlah;
 
             // Ini akan membuat kode acak seperti "TJD-A3F1"

@@ -71,7 +71,7 @@ class VerifikasiController
             $id_pesanan = $_POST['id_pesanan'];
 
             // Ubah status menjadi 'selesai'
-            $this->pesananModel->updateStatusPesanan($id_pesanan, 'selesai');
+            $this->pesananModel->updateStatusPesanan($id_pesanan, 'diambil');
 
             // Kembalikan ke halaman verifikasi dengan pesan sukses
             header('Location: index.php?action=verifikasi_pickup&status=success');

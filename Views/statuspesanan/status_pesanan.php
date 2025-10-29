@@ -48,7 +48,7 @@ if (!isset($pesanan) || !is_array($pesanan)) {
                             <option value="menunggu" <?= $p['status_pesanan'] == 'menunggu' ? 'selected' : '' ?>>Menunggu</option>
                             <option value="diproses" <?= $p['status_pesanan'] == 'diproses' ? 'selected' : '' ?>>Proses</option>
                             <option value="selesai" <?= $p['status_pesanan'] == 'selesai' ? 'selected' : '' ?>>Selesai</option>
-                            <option value="batal" <?= $p['status_pesanan'] == 'batal' ? 'selected' : '' ?>>Batal</option>
+                            <option value="diambil" <?= $p['status_pesanan'] == 'diambil' ? 'selected' : '' ?>>Diambil</option>
                         </select>
                     </td>
                 </tr>

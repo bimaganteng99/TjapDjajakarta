@@ -88,14 +88,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
 
         <?php if (isset($success) && $success == 'success'): ?>
             <div class="result-box">
-                <p class="success">Berhasil! Pesanan telah ditandai selesai.</p>
+                <p class="success">Berhasil! Pesanan telah ditandai "diambil".</p>
             </div>
         <?php endif; ?>
 
 
-        <?php if (isset($pesanan) && $pesanan['status_pesanan'] == 'diproses'): ?>
+        <?php if (isset($pesanan) && $pesanan['status_pesanan'] == 'selesai'): ?>
             <div class="result-box">
-                <h3>Pesanan Ditemukan (Status: DIPROSES)</h3>
+                <h3>Pesanan Ditemukan (Status: SELESAI)</h3>
                 <div class="pesanan-detail">
                     <strong>Kode:</strong> <?= htmlspecialchars($pesanan['kode_pesanan']) ?><br>
                     <strong>Menu:</strong> <?= htmlspecialchars($pesanan['nama_menu']) ?><br>
@@ -103,23 +103,23 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
                     <strong>Catatan:</strong> <?= htmlspecialchars($pesanan['catatan'] ?: '-') ?><br>
                 </div>
                 <hr>
-                <p>Konfirmasi bahwa pesanan ini sudah siap dan akan diambil oleh pelanggan?</p>
+                <p>Konfirmasi bahwa pesanan ini sudah siap dan akan diambil oleh driver?</p>
 
                 <form action="index.php?action=konfirmasi_pickup" method="POST">
                     <input type="hidden" name="id_pesanan" value="<?= $pesanan['id_pesanan'] ?>">
-                    <button type="submit" class="btn-konfirmasi">Konfirmasi Pick Up & Selesaikan Pesanan</button>
+                    <button type="submit" class="btn-konfirmasi">Konfirmasi Pick Up</button>
                 </form>
             </div>
         <?php endif; ?>
-        <?php if (isset($pesanan) && $pesanan['status_pesanan'] == 'selesai'): ?>
+        <?php if (isset($pesanan) && $pesanan['status_pesanan'] == 'diambil'): ?>
             <div class="result-box" style="background-color: #f8f9fa;">
-                <h3>Info: Pesanan Sudah Selesai</h3>
+                <h3>Info: Pesanan sudah diambil oleh driver</h3>
                 <div class="pesanan-detail">
                     <strong>Kode:</strong> <?= htmlspecialchars($pesanan['kode_pesanan']) ?><br>
                     <strong>Menu:</strong> <?= htmlspecialchars($pesanan['nama_menu']) ?><br>
                     <strong>Jumlah:</strong> <?= htmlspecialchars($pesanan['jumlah']) ?><br>
                     <strong>Catatan:</strong> <?= htmlspecialchars($pesanan['catatan'] ?: '-') ?><br>
-                    <strong>Status:</strong> <span style="font-weight: bold; color: green;">SELESAI</span>
+                    <strong>Status:</strong> <span style="font-weight: bold; color: green;">DIAMBIL</span>
                 </div>
                 <hr>
                 <p>Pesanan ini sudah diambil dan tidak perlu konfirmasi lagi.</p>

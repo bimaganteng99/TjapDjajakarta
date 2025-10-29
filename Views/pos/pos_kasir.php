@@ -280,8 +280,6 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
         }
       });
 
-      // (Opsional) Hapus baris lama yang sudah tidak ada di data baru
-      // ...
     }
 
     // Fungsi untuk menampilkan notifikasi toast
