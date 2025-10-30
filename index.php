@@ -132,4 +132,26 @@ switch ($action) {
     default:
         $authController->showLogin();
         break;
+
+     //membership
+     case 'membership':
+    $controller = new MembershipController($conn);
+    $controller->index();
+    break;
+
+case 'tambah_member':
+    $controller = new MembershipController($conn);
+    $controller->tambah();
+    break;
+
+case 'edit_member':
+    $controller = new MembershipController($conn);
+    $controller->edit();
+    break;
+
+case 'hapus_member':
+    $controller = new MembershipController($conn);
+    $controller->hapus();
+    break;
+   
 }
