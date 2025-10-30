@@ -1,22 +1,54 @@
 <?php
 // (Pastikan session_start() sudah ada di index.php)
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'staff') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pengadaan') {
     header('Location: index.php?action=login');
     exit();
 }
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Staff</title>
 </head>
+
 <body>
-    <h1>Selamat Bekerja, <?= htmlspecialchars($_SESSION['user_username']); ?>!</h1>
-    <h2>Ini Halaman Dashboard Staff Pengadaan</h2>
-    <p>Di sini nanti kamu bisa arahkan ke halaman sesuai tugas staff.</p>
-    
-    <br>
-    <a href="index.php?action=logout">Logout</a>
+    <?php include './views/layout/navbar.php'; ?>
+
+    <h2>Manajemen Stok Menu</h2>
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'update_success'): ?>
+        <p style="color: green; font-weight: bold;">Stok berhasil diperbarui!</p>
+    <?php endif; ?>
+
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>ID Menu</th>
+                <th>Nama Menu</th>
+                <th>Stok Saat Ini</th>
+                <th>Status</th>
+                <th>Update Stok</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($stockData as $item): ?>
+                <tr>
+                    <td><?= $item['id_menu'] ?></td>
+                    <td><?= htmlspecialchars($item['nama_menu']) ?></td>
+                    <td><?= $item['jumlah_stok'] ?></td>
+                    <td><?= htmlspecialchars($item['status']) ?></td>
+                    <td>
+                        <form action="index.php?action=update_stock" method="POST" style="display: inline;">
+                            <input type="hidden" name="id_menu" value="<?= $item['id_menu'] ?>">
+                            <input type="number" name="stok" value="<?= $item['jumlah_stok'] ?>" min="0" required style="width: 60px;">
+                            <button type="submit">Simpan</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </body>
+
 </html>

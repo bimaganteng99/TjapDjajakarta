@@ -11,6 +11,7 @@ require_once './controllers/PosController.php';
 include_once './controllers/StatusController.php';
 include_once './controllers/NotificationController.php';
 require_once './controllers/VerifikasiController.php';
+require_once './controllers/StockController.php';
 
 
 $authController = new AuthController();
@@ -19,6 +20,7 @@ $posController = new PosController();
 $statusController = new StatusController();
 $notificationController = new NotificationController();
 $verifikasiController = new VerifikasiController();
+$stockController = new StockController();
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -80,15 +82,15 @@ switch ($action) {
 
     case 'image_menu':            // STREAM gambar dari BLOB
         $menuController->streamMenuImage();
-    break;
+        break;
 
     case 'edit_menu':
         $menuController->showEditMenu();      // form edit
-    break;
+        break;
 
     case 'update_menu':
         $menuController->updateMenu();        // submit edit
-    break;
+        break;
 
 
     // POS
@@ -120,6 +122,11 @@ switch ($action) {
 
     case 'konfirmasi_pickup':
         $verifikasiController->konfirmasiPesanan();
+        break;
+
+    //pengadaan
+    case 'stock': 
+        $stockController->showStockPage();
         break;
 
     default:

@@ -14,14 +14,12 @@ class AuthController
     private $db;
     private $userModel;
     private $menuModel;
-    private $pesananModel;
 
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $this->userModel = new User($this->db);
-        $this->pesananModel = new PesananModel($this->db);
     }
 
     public function showLogin()
@@ -111,7 +109,7 @@ class AuthController
                 } elseif ($user['role'] == 'kasir') {
                     header('Location: index.php?action=pos_kasir');
                 } elseif ($user['role'] == 'pengadaan') {
-                    header('Location: index.php?action=dashboardStaffPengadaan');
+                    header('Location: index.php?action=stock');
                 } elseif ($user['role'] == 'cs') {
                     header('Location: index.php?action=dashboardCS');
                 } elseif ($user['role'] == 'marketing') {

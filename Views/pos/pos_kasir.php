@@ -296,6 +296,48 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
 
     // Panggil sekali saat halaman baru dimuat
     document.addEventListener('DOMContentLoaded', fetchUpdates);
+
+    function fetchStockUpdates() {
+      fetch('index.php?action=get_stock_updates')
+        .then(response => response.json())
+        .then(dataStockBaru => { // Ganti nama variabel agar jelas
+          perbaruiTampilanMenu(dataStockBaru);
+        })
+        .catch(error => {
+          /* ... */ });
+    }
+
+    function perbaruiTampilanMenu(dataStockBaru) {
+      const selectMenu = document.getElementById('menu');
+
+      // =========================================================
+      // 1. GANTI NAMA VARIABEL LOOP
+      // =========================================================
+      dataStockBaru.forEach(item => {
+        let idMenu = item.id_menu;
+        // =========================================================
+        // 2. SESUAIKAN NAMA FIELD STOK
+        // =========================================================
+        let stokBaru = parseInt(item.jumlah_stok, 10);
+        let statusMenuBaru = item.status;
+
+        if (selectMenu) {
+          const optionMenu = selectMenu.querySelector(`option[value="${idMenu}"]`);
+          if (optionMenu) {
+            if (stokBaru <= 0 || statusMenuBaru === 'habis') {
+              optionMenu.disabled = true;
+              if (!optionMenu.textContent.includes('(Habis)')) {
+                optionMenu.textContent += ' (Habis)';
+              }
+            } else {
+              optionMenu.disabled = false;
+              optionMenu.textContent = optionMenu.textContent.replace(' (Habis)', '');
+            }
+          }
+        }
+        // (Kode update tabel menu jika ada...)
+      });
+    }
   </script>
 </body>
 

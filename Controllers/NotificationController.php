@@ -2,25 +2,31 @@
 // controllers/NotificationController.php
 
 include_once './config/Database.php';
-include_once './models/PesananModel.php'; 
+include_once './models/PesananModel.php';
+include_once './models/StockModel.php';
 
-class NotificationController {
-    
+class NotificationController
+{
+
     private $db;
     private $pesananModel;
+    private $stockModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $database = new Database();
         $this->db = $database->getConnection();
         $this->pesananModel = new PesananModel($this->db);
+        $this->stockModel = new StockModel($this->db);
     }
 
     /**
      * API Endpoint untuk Polling
      * Mengambil semua pesanan dan mengirimnya sebagai JSON
      */
-    public function getPesananUpdates() {
-        
+    public function getPesananUpdates()
+    {
+
         // Keamanan: Pastikan hanya kasir yang bisa akses
         // (Atau role lain yang berhak melihat POS)
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
@@ -38,5 +44,22 @@ class NotificationController {
         echo json_encode($pesanan);
         exit();
     }
+
+    public function getStockUpdates()
+    {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pengadaan') {
+            header('Content-Type: application/json');
+            http_response_code(403); // Akses Ditolak
+            echo json_encode(['error' => 'Akses ditolak']);
+            exit;
+        }
+
+        // Panggil model BARU untuk ambil data stok + nama menu
+        $stockData = $this->stockModel->getAllStockWithMenuName();
+
+        // Kirim data sebagai JSON
+        header('Content-Type: application/json');
+        echo json_encode($stockData);
+        exit();
+    }
 }
-?>
