@@ -13,7 +13,7 @@ class StockModel
 
     public function getAllStockWithMenuName()
     {
-        $query = "SELECT s.id_menu, m.nama AS nama_menu, s.jumlah_stok, m.status 
+        $query = "SELECT s.id_menu, m.nama AS nama_menu, s.jumlah_stock, m.status 
                   FROM {$this->table} s
                   JOIN {$this->menuTable} m ON s.id_menu = m.id_menu
                   ORDER BY m.nama ASC";
@@ -42,9 +42,9 @@ class StockModel
 
         try {
             // 3. Update tabel stockmenu
-            $queryStock = "UPDATE {$this->table} SET jumlah_stok = :stok WHERE id_menu = :id_menu";
+            $queryStock = "UPDATE {$this->table} SET jumlah_stock = :stock WHERE id_menu = :id_menu";
             $stmtStock = $this->conn->prepare($queryStock);
-            $stmtStock->bindParam(':stok', $jumlah_stok_baru, PDO::PARAM_INT);
+            $stmtStock->bindParam(':stock', $jumlah_stok_baru, PDO::PARAM_INT);
             $stmtStock->bindParam(':id_menu', $id_menu, PDO::PARAM_INT);
             $stockUpdated = $stmtStock->execute();
 
@@ -74,7 +74,7 @@ class StockModel
 
     public function addInitialStock($id_menu)
     {
-        $query = "INSERT INTO {$this->table} (id_menu, jumlah_stok) VALUES (:id_menu, 0)";
+        $query = "INSERT INTO {$this->table} (id_menu, jumlah_stock) VALUES (:id_menu, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id_menu', $id_menu, PDO::PARAM_INT);
         return $stmt->execute();

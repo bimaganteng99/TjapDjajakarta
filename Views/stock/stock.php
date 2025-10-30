@@ -26,9 +26,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pengadaan') {
             <tr>
                 <th>ID Menu</th>
                 <th>Nama Menu</th>
-                <th>Stok Saat Ini</th>
+                <th>Stock Saat Ini</th>
                 <th>Status</th>
-                <th>Update Stok</th>
+                <th>Update Stock</th>
             </tr>
         </thead>
         <tbody>
@@ -36,12 +36,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pengadaan') {
                 <tr>
                     <td><?= $item['id_menu'] ?></td>
                     <td><?= htmlspecialchars($item['nama_menu']) ?></td>
-                    <td><?= $item['jumlah_stok'] ?></td>
+                    <td><?= $item['jumlah_stock'] ?></td>
                     <td><?= htmlspecialchars($item['status']) ?></td>
                     <td>
                         <form action="index.php?action=update_stock" method="POST" style="display: inline;">
                             <input type="hidden" name="id_menu" value="<?= $item['id_menu'] ?>">
-                            <input type="number" name="stok" value="<?= $item['jumlah_stok'] ?>" min="0" required style="width: 60px;">
+                            <input type="number" name="stock" value="<?= $item['jumlah_stock'] ?>" min="0" required style="width: 60px;">
                             <button type="submit">Simpan</button>
                         </form>
                     </td>
