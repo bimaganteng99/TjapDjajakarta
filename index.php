@@ -125,8 +125,12 @@ switch ($action) {
         break;
 
     //pengadaan
-    case 'stock': 
+    case 'stock':
         $stockController->showStockPage();
+        break;
+
+    case 'update_stock':
+        $stockController->handleStockUpdate();
         break;
 
     default:

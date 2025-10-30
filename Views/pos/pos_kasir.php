@@ -304,7 +304,8 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], $allowed_r
           perbaruiTampilanMenu(dataStockBaru);
         })
         .catch(error => {
-          /* ... */ });
+          /* ... */
+        });
     }
 
     function perbaruiTampilanMenu(dataStockBaru) {
