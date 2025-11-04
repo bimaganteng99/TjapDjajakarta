@@ -3,6 +3,7 @@
         <?php if ($_SESSION['user_role'] == 'manajer'): ?>
             <li><a href="index.php?action=manajemen_menu">Manajemen Menu</a></li>
             <li><a href="index.php?action=manajemen_akun">Manajemen Akun</a></li>
+            <!-- <li><a href="index.php?action=edit_resep">Manajemen Resep</a></li> -->
 
         <?php elseif ($_SESSION['user_role'] == 'admin'): ?>
             <li><a href="index.php?action=dashboardAdmin">Dashboard Admin</a></li>

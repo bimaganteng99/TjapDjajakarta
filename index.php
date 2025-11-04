@@ -6,6 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 require_once './models/BahanBakuModel.php';
+require_once './models/ResepModel.php';
 require_once './controllers/AuthController.php';
 require_once './controllers/MenuController.php';
 require_once './controllers/PosController.php';
@@ -13,6 +14,7 @@ include_once './controllers/StatusController.php';
 include_once './controllers/NotificationController.php';
 require_once './controllers/VerifikasiController.php';
 require_once './controllers/StockController.php';
+require_once './controllers/ResepController.php';
 
 
 $authController = new AuthController();
@@ -22,6 +24,7 @@ $statusController = new StatusController();
 $notificationController = new NotificationController();
 $verifikasiController = new VerifikasiController();
 $stockController = new StockController();
+$resepController = new ResepController();
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -93,6 +96,13 @@ switch ($action) {
         $menuController->updateMenu();        // submit edit
         break;
 
+    case 'edit_resep': // Menampilkan halaman edit resep
+        $resepController->showResepPage();
+        break;
+    case 'handle_resep': // Menangani tambah/hapus bahan resep
+        $resepController->handleResepAction();
+        break;
+
 
     // POS
     case 'pos_kasir':
@@ -113,7 +123,6 @@ switch ($action) {
         break;
 
     case 'dashboardStaffOperasional':
-        // INI YANG BENAR
         $statusController->showStatusPage();
         break;
 
@@ -134,29 +143,29 @@ switch ($action) {
         $stockController->handleStockAction();
         break;
 
+
+    //membership
+    case 'membership':
+        $controller = new MembershipController($conn);
+        $controller->index();
+        break;
+
+    case 'tambah_member':
+        $controller = new MembershipController($conn);
+        $controller->tambah();
+        break;
+
+    case 'edit_member':
+        $controller = new MembershipController($conn);
+        $controller->edit();
+        break;
+
+    case 'hapus_member':
+        $controller = new MembershipController($conn);
+        $controller->hapus();
+        break;
+
     default:
         $authController->showLogin();
         break;
-
-     //membership
-     case 'membership':
-    $controller = new MembershipController($conn);
-    $controller->index();
-    break;
-
-case 'tambah_member':
-    $controller = new MembershipController($conn);
-    $controller->tambah();
-    break;
-
-case 'edit_member':
-    $controller = new MembershipController($conn);
-    $controller->edit();
-    break;
-
-case 'hapus_member':
-    $controller = new MembershipController($conn);
-    $controller->hapus();
-    break;
-   
 }
