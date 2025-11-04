@@ -1,24 +1,21 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 include_once './config/Database.php';
 include_once './models/MenuModel.php';
-include_once './models/StockModel.php';
+include_once './models/BahanBakuModel.php';
 
 class MenuController
 {
     private $db;
     private $menuModel;
-    private $stockModel;
+    private $bahanbakuModel;
 
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $this->menuModel = new MenuModel($this->db);
-        $this->stockModel = new StockModel($this->db);
+        $this->bahanbakuModel = new bahanbakuModel($this->db);
     }
 
     /** Halaman Manajemen Menu (khusus manajer) */
@@ -68,10 +65,10 @@ class MenuController
             // Dapatkan ID dari menu yang BARU saja kamu buat
             $new_menu_id = $this->db->lastInsertId();
 
-            if ($new_menu_id > 0) {
-                // Panggil StockModel untuk membuat data stok awalnya (default 0)
-                $this->stockModel->addInitialStock($new_menu_id);
-            }
+            // if ($new_menu_id > 0) {
+            //     // Panggil StockModel untuk membuat data stok awalnya (default 0)
+            //     $this->bahanbakuModel->addInitialStock($new_menu_id);
+            // }
 
         }
 

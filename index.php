@@ -5,6 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once './models/BahanBakuModel.php';
 require_once './controllers/AuthController.php';
 require_once './controllers/MenuController.php';
 require_once './controllers/PosController.php';
@@ -129,8 +130,8 @@ switch ($action) {
         $stockController->showStockPage();
         break;
 
-    case 'update_stock':
-        $stockController->handleStockUpdate();
+    case 'handle_stock':
+        $stockController->handleStockAction();
         break;
 
     default:

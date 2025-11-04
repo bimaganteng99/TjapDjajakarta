@@ -22,6 +22,10 @@
             <!-- <li><a href="index.php?action=pos_kasir">POS</a></li> -->
             <li><a href="index.php?action=status_pesanan">Status Pesanan</a></li>
 
+        <?php elseif ($_SESSION['user_role'] == 'pengadaan'): ?>
+            <!-- <li><a href="index.php?action=pos_kasir">POS</a></li> -->
+            <li><a href="index.php?action=stock">Kelola Stock</a></li>
+
         <?php endif; ?>
         <li><a href="index.php?action=logout">Logout</a></li>
     </ul>

@@ -3,21 +3,21 @@
 
 include_once './config/Database.php';
 include_once './models/PesananModel.php';
-include_once './models/StockModel.php';
+include_once './models/BahanBakuModel.php';
 
 class NotificationController
 {
 
     private $db;
     private $pesananModel;
-    private $stockModel;
+    private $bahanbakuModel;
 
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $this->pesananModel = new PesananModel($this->db);
-        $this->stockModel = new StockModel($this->db);
+        $this->bahanbakuModel = new BahanBakuModel($this->db);
     }
 
     /**
@@ -55,7 +55,7 @@ class NotificationController
         }
 
         // Panggil model BARU untuk ambil data stok + nama menu
-        $stockData = $this->stockModel->getAllStockWithMenuName();
+        $stockData = $this->bahanbakuModel->getAllBahanBaku();
 
         // Kirim data sebagai JSON
         header('Content-Type: application/json');
