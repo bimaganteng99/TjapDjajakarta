@@ -4,15 +4,17 @@ class MenuModel
     private $conn;
     private $table = 'menu';
 
-    public function __construct($db) { $this->conn = $db; }
+    public function __construct($db)
+    {
+        $this->conn = $db;
+    }
 
-    /** Ambil semua menu – jangan tarik BLOB besar untuk list.
-        Pakai flag has_gambar biar ringan. */
     public function getAllMenus()
     {
         $sql = "SELECT id_menu, nama, harga, status, deskripsi,
                        (gambar IS NOT NULL) AS has_gambar
                 FROM {$this->table}
+                WHERE status != 'diarsipkan'  -- TAMBAHKAN INI
                 ORDER BY nama ASC";
         $st = $this->conn->prepare($sql);
         $st->execute();
@@ -47,7 +49,7 @@ class MenuModel
 
     public function deleteMenu($id)
     {
-        $st = $this->conn->prepare("DELETE FROM {$this->table} WHERE id_menu = :id");
+        $st = $this->conn->prepare("UPDATE {$this->table} SET status = 'diarsipkan' WHERE id_menu = :id");
         $st->bindParam(':id', $id, PDO::PARAM_INT);
         return $st->execute();
     }
@@ -81,5 +83,4 @@ class MenuModel
             return $st->execute();
         }
     }
-
 }
