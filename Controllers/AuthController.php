@@ -24,13 +24,13 @@ class AuthController
 
     public function showLogin()
     {
-        include './views/auth/login.php';
+        include './views/auth/auth.php';
     }
 
-    public function showRegister()
-    {
-        include './views/auth/register.php';
-    }
+    // public function showRegister()
+    // {
+    //     include './views/auth/auth.php';
+    // }
 
     // Memproses data dari form register
     public function handleRegister()
@@ -56,7 +56,7 @@ class AuthController
                 if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'manajer') {
                     include './views/manajemen/manajemen_akun.php';
                 } else {
-                    include './views/auth/register.php';
+                    include './views/auth/auth.php';
                 }
             } else {
                 // Tidak ada duplikat → lanjut register
@@ -68,7 +68,7 @@ class AuthController
                         include './views/manajemen/manajemen_akun.php';
                     } else {
                         // Kalau pelanggan yang daftar biasa → arahkan ke login
-                        header('Location: index.php?action=login&status=reg_success');
+                        header('Location: index.php?action=auth&status=reg_success');
                     }
                 } else {
                     // Jika gagal register
@@ -76,7 +76,7 @@ class AuthController
                     if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'manajer') {
                         include './views/manajemen/manajemen_akun.php';
                     } else {
-                        include './views/auth/register.php';
+                        include './views/auth/auth.php';
                     }
                 }
             }
@@ -118,7 +118,7 @@ class AuthController
                 exit();
             } else {
                 $error = "Email/Username atau password salah!";
-                include './views/auth/login.php';
+                include './views/auth/auth.php';
             }
         }
     }

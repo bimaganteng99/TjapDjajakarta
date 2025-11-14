@@ -31,12 +31,8 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'login';
 
 // Routing utama
 switch ($action) {
-    case 'login':
+    case 'auth':
         $authController->showLogin();
-        break;
-
-    case 'register':
-        $authController->showRegister();
         break;
 
     case 'handleRegister':
