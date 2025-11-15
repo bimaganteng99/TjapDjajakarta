@@ -1,0 +1,218 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f7f7f7;
+  padding: 0;
+}
+
+.page-container {
+  padding: 0 24px;
+}
+
+/* Grid layout */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+/* Card */
+.menu-card {
+  background: white;
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  transition: 0.2s;
+  text-align: center;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Image */
+.image-wrapper {
+  position: relative;
+}
+
+.menu-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+/* Price badge */
+.price-badge {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  background: #6d3b26; /* coklat merah elegan */
+  color: #fff;
+  padding: 8px 14px;
+  font-weight: bold;
+  border-radius: 50px;
+  font-size: 14px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Text */
+.menu-card h4 {
+  margin: 12px 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.menu-card .desc {
+  font-size: 14px;
+  color: #666;
+  min-height: 45px;
+}
+
+/* Status */
+.status {
+  display: inline-block;
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tersedia {
+  background: #d7f5df;
+  color: #2e7d32;
+}
+
+.habis {
+  background: #f8d7da;
+  color: #b0252b;
+}
+
+/* form pesan */
+/* FORM DI DALAM CARD */
+.menu-card .mini-form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Semua elemen form HARUS full width */
+.menu-card .mini-form input,
+.menu-card .mini-form select,
+.menu-card .mini-form button {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  border: 1px solid #ccc !important;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Button fix */
+.menu-card .mini-form button {
+  background: #5b8a72 !important;
+  color: white !important;
+  cursor: pointer;
+  border: none !important;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.menu-card .mini-form button:hover {
+  background: #4b715d !important;
+}
+
+/* Card habis versi redup */
+.habis-card {
+  background: #f7f7f7;
+  opacity: 0.8;
+  filter: grayscale(40%);
+}
+
+/* Hover tetap lembut, tidak kayak tersedia */
+.habis-card:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  opacity: 0.9;
+}
+
+/* Gambar blur & grayscale */
+.habis-img {
+  filter: grayscale(100%) brightness(0.8) blur(1px);
+}
+
+/* Badge harga versi habis */
+.habis-badge {
+  background: #b25a4b; /* coklat merah lembut selaras gradient navbar */
+  opacity: 0.7;
+}
+
+/* Card wrapper */
+.section-card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.section-card h3,
+.section-card h2 {
+  margin-top: 0;
+}
+
+/* Table modern */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #444;
+}
+
+tr:hover {
+  background: #f2f2f2;
+}
+
+td,
+th {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+/* warna status */
+.tersedia {
+  background: #e7f7ed;
+}
+.habis {
+  background: #fbeaea;
+}
+
+/* Form */
+.mini-form input,
+.mini-form select,
+button {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+button {
+  background: #5b8a72;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #4b715d;
+}
