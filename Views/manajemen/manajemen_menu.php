@@ -54,9 +54,6 @@ $menus = $menus ?? [];
 
   <?php include './views/layout/navbar.php'; ?>
 
-  <h2>🍽️ Manajemen Menu</h2>
-  <p>Anda login sebagai <strong>Manajer</strong></p>
-
   <h3>Tambah Menu Baru</h3>
   <form action="index.php?action=handleMenu" method="post" enctype="multipart/form-data">
     <input type="hidden" name="menu_action" value="add">
