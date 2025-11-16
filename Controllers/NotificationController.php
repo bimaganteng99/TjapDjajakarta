@@ -3,32 +3,35 @@
 
 include_once './config/Database.php';
 include_once './models/PesananModel.php';
+include_once './models/MenuModel.php';
 include_once './models/BahanBakuModel.php';
+include_once './models/ResepModel.php';
 
 class NotificationController
 {
-
     private $db;
     private $pesananModel;
     private $bahanbakuModel;
+    private $resepModel;
+    private $menuModel; // (Property ini hilang)
 
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $this->pesananModel = new PesananModel($this->db);
+        // PERBAIKAN TYPO: 'b' harus besar -> BahanBakuModel
         $this->bahanbakuModel = new BahanBakuModel($this->db);
+        $this->resepModel = new ResepModel($this->db);
+        // (Tambahkan inisialisasi MenuModel)
+        $this->menuModel = new MenuModel($this->db);
     }
 
     /**
-     * API Endpoint untuk Polling
-     * Mengambil semua pesanan dan mengirimnya sebagai JSON
+     * API Endpoint untuk Polling Pesanan
      */
     public function getPesananUpdates()
     {
-
-        // Keamanan: Pastikan hanya kasir yang bisa akses
-        // (Atau role lain yang berhak melihat POS)
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
             header('Content-Type: application/json');
             http_response_code(403); // Akses Ditolak
@@ -36,10 +39,8 @@ class NotificationController
             exit;
         }
 
-        // Panggil model untuk ambil data
         $pesanan = $this->pesananModel->getAllPesanan();
 
-        // Kirim data sebagai JSON
         header('Content-Type: application/json');
         echo json_encode($pesanan);
         exit();
@@ -47,19 +48,18 @@ class NotificationController
 
     public function getStockUpdates()
     {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pengadaan') {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
             header('Content-Type: application/json');
-            http_response_code(403); // Akses Ditolak
+            http_response_code(403);
             echo json_encode(['error' => 'Akses ditolak']);
             exit;
         }
 
-        // Panggil model BARU untuk ambil data stok + nama menu
-        $stockData = $this->bahanbakuModel->getAllBahanBaku();
+        // Ambil menu dengan status hasil perhitungan stok
+        $menu_kalkulasi = $this->menuModel->getAllMenusWithCalculatedStock();
 
-        // Kirim data sebagai JSON
         header('Content-Type: application/json');
-        echo json_encode($stockData);
+        echo json_encode($menu_kalkulasi);
         exit();
     }
 }

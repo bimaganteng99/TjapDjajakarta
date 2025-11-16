@@ -118,6 +118,10 @@ switch ($action) {
         $notificationController->getPesananUpdates();
         break;
 
+    case 'get_stock_updates':
+        $notificationController->getStockUpdates();
+        break;
+
     case 'dashboardStaffOperasional':
         $statusController->showStatusPage();
         break;

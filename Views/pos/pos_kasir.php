@@ -13,18 +13,67 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
   <meta charset="UTF-8">
   <title>POS Kasir</title>
   <link rel="stylesheet" href="assets/css/posstyle.css">
+
+  <style>
+    #toast-notification {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 100;
+      right: 30px;
+      top: 30px;
+      font-size: 17px;
+    }
+
+    #toast-notification.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {
+        top: 0;
+        opacity: 0;
+      }
+
+      to {
+        top: 30px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        top: 30px;
+        opacity: 1;
+      }
+
+      to {
+        top: 0;
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <?php include './views/layout/navbar.php'; ?>
 
   <div class="page-container">
-    <!-- ====== MENU TERSEDIA ====== -->
     <h3>Menu Tersedia</h3>
-    <div class="menu-grid">
+    <div class="menu-grid" id="menu-tersedia-grid">
+
       <?php foreach ($menus as $menu): ?>
         <?php if ($menu['status'] === 'tersedia'): ?>
-          <div class="menu-card">
+          <div class="menu-card"
+            id="menu-card-<?= $menu['id_menu'] ?>"
+            data-menu-id="<?= $menu['id_menu'] ?>">
+
 
             <div class="image-wrapper">
               <img src="index.php?action=image_menu&id=<?= (int)$menu['id_menu'] ?>" alt="<?= htmlspecialchars($menu['nama']) ?>">
@@ -37,14 +86,6 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
 
             <?php if (!$isKasir): ?>
               <form class="mini-form" action="index.php?action=tambah_pesanan" method="POST">
-                <input type="hidden" name="id_menu" value="<?= (int)$menu['id_menu'] ?>">
-                <input type="number" name="jumlah" min="1" value="1">
-                <select name="jenis_pesanan">
-                  <option value="dine in">Dine In</option>
-                  <option value="delivery">Delivery</option>
-                </select>
-                <input type="text" name="catatan" placeholder="Catatan (opsional)">
-                <button type="submit">Pesan</button>
               </form>
             <?php endif; ?>
 
@@ -54,23 +95,15 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
     </div>
 
 
-    <!-- ====== MENU HABIS ====== -->
     <h3>Menu Habis</h3>
-    <div class="menu-grid">
+    <div class="menu-grid habis-card" id="menu-habis-grid">
+
       <?php foreach ($menus as $menu): ?>
         <?php if ($menu['status'] === 'habis'): ?>
-          <div class="menu-card habis-card">
+          <div class="menu-card habis-card"
+            id="menu-habis-<?= $menu['id_menu'] ?>"
+            data-menu-id="<?= $menu['id_menu'] ?>">
 
-            <div class="image-wrapper">
-              <img class="habis-img" src="index.php?action=image_menu&id=<?= (int)$menu['id_menu'] ?>">
-              <span class="price-badge habis-badge">Rp<?= number_format((float)$menu['harga']) ?></span>
-            </div>
-
-            <h4><?= htmlspecialchars($menu['nama']) ?></h4>
-            <p class="desc"><?= htmlspecialchars($menu['deskripsi'] ?? '-') ?></p>
-            <span class="status habis">Habis</span>
-
-            <div class="muted" style="margin-top: 6px;">Tidak bisa dipesan</div>
           </div>
         <?php endif; ?>
       <?php endforeach; ?>
@@ -78,18 +111,24 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
 
 
     <?php if ($isKasir): ?>
+
       <div class="section-card">
-        <!-- ====== KASIR SAJA: Form pemesanan global ====== -->
         <h2>Halaman POS Kasir</h2>
         <form action="index.php?action=tambah_pesanan" method="POST">
           <label for="menu">Menu:</label>
           <select name="id_menu" id="menu" required>
             <?php foreach ($menus as $menu): ?>
-              <?php if ($menu['status'] === 'tersedia'): ?>
-                <option value="<?= (int)$menu['id_menu'] ?>" data-harga="<?= htmlspecialchars($menu['harga']) ?>">
-                  <?= htmlspecialchars($menu['nama']) ?> - Rp<?= number_format((float)$menu['harga']) ?>
-                </option>
-              <?php endif; ?>
+              <?php
+              // Tentukan apakah statusnya 'tersedia'
+              $isTersedia = ($menu['status'] === 'tersedia');
+              // Siapkan teks (Habis) jika statusnya 'habis'
+              $textHabis = $isTersedia ? '' : ' (Habis)';
+              // Nonaktifkan jika 'habis'
+              $isDisabled = !$isTersedia ? 'disabled' : '';
+              ?>
+              <option value="<?= (int)$menu['id_menu'] ?>" data-harga="<?= htmlspecialchars($menu['harga']) ?>" <?= $isDisabled ?>>
+                <?= htmlspecialchars($menu['nama']) ?> - Rp<?= number_format((float)$menu['harga']) . $textHabis ?>
+              </option>
             <?php endforeach; ?>
           </select>
 
@@ -107,10 +146,10 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
 
           <button type="submit">Tambah Pesanan</button>
         </form>
-
         <hr>
+      </div>
 
-        <!-- ====== KASIR SAJA: Daftar Pesanan + Polling ====== -->
+      <div class="section-card">
         <h3>Daftar Pesanan</h3>
         <table border="1" cellpadding="5">
           <thead>
@@ -141,54 +180,202 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
           </tbody>
         </table>
       </div>
-  </div>
 
+    <?php endif; // --- AKHIR BLOK KHUSUS KASIR --- 
+    ?>
+
+  </div>
   <div id="toast-notification"></div>
 
-  <script>
-    // Polling hanya untuk kasir
-    const pollingInterval = setInterval(fetchUpdates, 5000);
 
-    function fetchUpdates() {
-      fetch('index.php?action=get_pesanan_updates')
-        .then(r => {
-          if (!r.ok) throw new Error('Network');
-          return r.json();
-        })
-        .then(data => perbaruiTabel(data))
-        .catch(err => console.error('Error polling:', err));
-    }
+  <?php if ($isKasir): ?>
+    <script>
+      // --- 1. POLLING UNTUK STATUS PESANAN ---
+      const pesananInterval = setInterval(fetchPesananUpdates, 5000);
 
-    function perbaruiTabel(dataPesananBaru) {
-      dataPesananBaru.forEach(pesanan => {
-        const id = pesanan.id_pesanan;
-        const statusBaru = pesanan.status_pesanan;
-        const tdStatus = document.getElementById('status-kasir-' + id);
+      function fetchPesananUpdates() {
+        fetch('index.php?action=get_pesanan_updates')
+          .then(r => r.ok ? r.json() : Promise.reject('Network (Pesanan)'))
+          .then(data => perbaruiTabelPesanan(data))
+          .catch(err => console.error('Error polling pesanan:', err));
+      }
 
-        if (tdStatus) {
-          const lama = tdStatus.innerText;
-          if (lama !== statusBaru) {
-            tdStatus.innerText = statusBaru;
-            tdStatus.parentElement.style.backgroundColor = '#fff3cd';
-            showNotification('Pesanan ID #' + id + ' kini statusnya: ' + statusBaru);
+      function perbaruiTabelPesanan(dataPesananBaru) {
+        dataPesananBaru.forEach(pesanan => {
+          const id = pesanan.id_pesanan;
+          const statusBaru = pesanan.status_pesanan;
+          const tdStatus = document.getElementById(`status-kasir-${id}`);
+
+          if (tdStatus) {
+            const lama = tdStatus.innerText;
+            if (lama !== statusBaru) {
+              tdStatus.innerText = statusBaru;
+              tdStatus.parentElement.style.backgroundColor = '#fff3cd';
+              showNotification(`Pesanan ID #${id} kini statusnya: ${statusBaru}`);
+            }
+          }
+        });
+      }
+
+
+      // --- 2. POLLING UNTUK STOK MENU ---
+      const stokInterval = setInterval(fetchStockUpdates, 6000);
+
+      function fetchStockUpdates() {
+        fetch('index.php?action=get_stock_updates')
+          .then(r => r.ok ? r.json() : Promise.reject('Network (Stok)'))
+          .then(dataMenu => perbaruiTampilanMenu(dataMenu))
+          .catch(err => console.error('Error polling stok:', err));
+      }
+
+      function perbaruiTampilanMenu(dataMenuBaru) {
+        const selectMenu = document.getElementById('menu');
+        if (!selectMenu) return;
+
+        dataMenuBaru.forEach(menu => {
+          const idMenu = menu.id_menu;
+          const statusKalkulasi = menu.status;
+          // Kirim seluruh object menu ke updateMenuCard agar bisa akses harga, deskripsi, dll
+          const optionMenu = selectMenu.querySelector(`option[value="${idMenu}"]`);
+
+          // Determine current/previous states
+          const sedangHabis = (statusKalkulasi === 'habis');
+          const sebelumnyaDisabled = optionMenu ? optionMenu.disabled : false;
+
+          // Fallback display name: prefer nama from server, else derive from option text or existing card
+          const displayName = menu.nama || (optionMenu ? optionMenu.textContent.split(' - ')[0].trim() : null);
+
+          // Update option element state/text
+          if (optionMenu) {
+            if (sedangHabis && !sebelumnyaDisabled) {
+              optionMenu.disabled = true;
+              optionMenu.textContent = optionMenu.textContent.replace(' (Habis)', '') + ' (Habis)';
+            } else if (!sedangHabis && sebelumnyaDisabled) {
+              optionMenu.disabled = false;
+              optionMenu.textContent = optionMenu.textContent.replace(' (Habis)', '');
+            }
+          }
+
+          // Kirim object menu ke updateMenuCard
+          updateMenuCard(idMenu, statusKalkulasi, menu);
+
+          // --- Pindahkan card menu ---
+          const card = document.querySelector(`[data-menu-id="${idMenu}"]`);
+          if (card) {
+            const targetId = sedangHabis ? "menu-habis-grid" : "menu-tersedia-grid";
+            const target = document.getElementById(targetId);
+            if (target && card.parentElement !== target) {
+              target.appendChild(card);
+            }
+          }
+        });
+      }
+
+      function updateMenuCard(idMenu, statusKalkulasi, menuData) {
+        // menuData bisa berupa string (nama) atau object (data lengkap)
+        let namaMenu = null,
+          harga = null,
+          deskripsi = null;
+        if (typeof menuData === 'object' && menuData !== null) {
+          namaMenu = menuData.nama || null;
+          harga = menuData.harga || null;
+          deskripsi = menuData.deskripsi || null;
+        } else {
+          namaMenu = menuData;
+        }
+        const displayName = namaMenu || (`Menu #${idMenu}`);
+
+        const cardTersedia = document.getElementById("menu-card-" + idMenu);
+        const cardHabis = document.getElementById("menu-habis-" + idMenu);
+        const gridTersedia = document.getElementById("menu-tersedia-grid");
+        const gridHabis = document.getElementById("menu-habis-grid");
+
+        // Helper: generate innerHTML card tersedia
+        function getCardTersediaHTML() {
+          return `
+            <div class="image-wrapper">
+              <img src="index.php?action=image_menu&id=${idMenu}" alt="${displayName}">
+              <span class="price-badge">Rp${harga ? Number(harga).toLocaleString('id-ID') : '-'}</span>
+            </div>
+            <h4>${displayName}</h4>
+            <p class="desc">${deskripsi ? deskripsi : '-'}</p>
+            <span class="status tersedia">Tersedia</span>
+          `;
+        }
+        // Helper: generate innerHTML card habis
+        function getCardHabisHTML() {
+          return `
+            <div class="image-wrapper">
+              <img src="index.php?action=image_menu&id=${idMenu}" alt="${displayName}">
+            </div>
+            <h4>${displayName}</h4>
+            <span class="status habis">Habis</span>
+          `;
+        }
+
+        // Jika status berubah menjadi habis
+        if (statusKalkulasi === "habis") {
+          if (cardTersedia) {
+            cardTersedia.remove();
+            showNotification(`Stok untuk ${displayName} habis!`);
+            const newCard = document.createElement("div");
+            newCard.id = "menu-habis-" + idMenu;
+            newCard.className = "menu-card habis-card";
+            newCard.setAttribute('data-menu-id', idMenu);
+            newCard.innerHTML = getCardHabisHTML();
+            if (gridHabis) gridHabis.appendChild(newCard);
+          } else if (!cardHabis) {
+            const newCard = document.createElement("div");
+            newCard.id = "menu-habis-" + idMenu;
+            newCard.className = "menu-card habis-card";
+            newCard.setAttribute('data-menu-id', idMenu);
+            newCard.innerHTML = getCardHabisHTML();
+            if (gridHabis) gridHabis.appendChild(newCard);
+            showNotification(`Stok untuk ${displayName} habis!`);
+          }
+        } else {
+          if (cardHabis) {
+            cardHabis.remove();
+            showNotification(`Stok untuk ${displayName} telah tersedia!`);
+            const newCard = document.createElement("div");
+            newCard.id = "menu-card-" + idMenu;
+            newCard.className = "menu-card";
+            newCard.setAttribute('data-menu-id', idMenu);
+            newCard.innerHTML = getCardTersediaHTML();
+            if (gridTersedia) gridTersedia.appendChild(newCard);
+          } else if (!cardTersedia) {
+            const newCard = document.createElement("div");
+            newCard.id = "menu-card-" + idMenu;
+            newCard.className = "menu-card";
+            newCard.setAttribute('data-menu-id', idMenu);
+            newCard.innerHTML = getCardTersediaHTML();
+            if (gridTersedia) gridTersedia.appendChild(newCard);
+            showNotification(`Stok untuk ${displayName} telah tersedia!`);
           }
         }
+      }
+
+      // --- 3. FUNGSI NOTIFIKASI ---
+      function showNotification(message) {
+        let toast = document.getElementById("toast-notification");
+        if (toast) {
+          toast.innerText = message;
+          toast.className = "show";
+          setTimeout(() => {
+            toast.className = toast.className.replace("show", "");
+          }, 3000);
+        }
+      }
+
+
+      // --- 4. DOM CONTENT LOADED ---
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchPesananUpdates();
+        fetchStockUpdates();
       });
-    }
-
-    function showNotification(message) {
-      let toast = document.getElementById("toast-notification");
-      toast.innerText = message;
-      toast.className = "show";
-      setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-      }, 3000);
-    }
-
-    document.addEventListener('DOMContentLoaded', fetchUpdates);
-  </script>
-<?php endif; // end kasir only 
-?>
+    </script>
+  <?php endif; // --- AKHIR SCRIPT KHUSUS KASIR --- 
+  ?>
 
 </body>
 

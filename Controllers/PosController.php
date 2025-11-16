@@ -12,6 +12,8 @@ class PosController
     private $db;
     private $menuModel;
     private $pesananModel;
+    private $bahanBakuModel; // (Tambahkan ini)
+    private $resepModel;
 
     public function __construct()
     {
@@ -19,17 +21,63 @@ class PosController
         $this->db = $database->getConnection();
         $this->menuModel = new MenuModel($this->db);
         $this->pesananModel = new PesananModel($this->db);
+        $this->bahanBakuModel = new BahanBakuModel($this->db);
+        $this->resepModel = new ResepModel($this->db);
     }
 
     public function showPOSKasir()
     {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'kasir' && $_SESSION['user_role'] !== 'pelanggan') {
+        if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['kasir', 'pelanggan'])) {
             header('Location: index.php?action=login');
             exit();
         }
 
-        // Ambil semua menu dari DB
-        $menus = $this->menuModel->getAllMenus();
+        // =========================================================
+        // 3. LOGIKA "PINTAR" DIMULAI DI SINI
+        // =========================================================
+
+        // A. Ambil semua menu (versi "bodoh" dari DB)
+        $semua_menu = $this->menuModel->getAllMenus();
+        // B. Ambil semua stok bahan baku (array [id => stok])
+        $stok_bahan = $this->bahanBakuModel->getAllBahanBakuIndexed();
+
+        $menu_kalkulasi = []; // Ini akan jadi variabel $menus baru
+
+        foreach ($semua_menu as $menu) {
+            $id_menu = $menu['id_menu'];
+            $status_kalkulasi = $menu['status']; // Ambil status manual
+
+            // C. Cek resep hanya jika status manual 'tersedia'
+            if ($status_kalkulasi == 'tersedia') {
+                $resep = $this->resepModel->getResepByIdMenu($id_menu);
+
+                if (!empty($resep)) {
+                    // D. Cek stok bahan
+                    foreach ($resep as $item) {
+                        $id_bahan = $item['id_bahan'];
+                        $butuh = (float)$item['jumlah_dibutuhkan'];
+                        $tersedia = $stok_bahan[$id_bahan] ?? 0;
+
+                        if ($tersedia < $butuh) {
+                            $status_kalkulasi = 'habis'; // Timpa status jadi 'habis'
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // E. Masukkan status baru (hasil kalkulasi) ke array
+            $menu['status'] = $status_kalkulasi;
+            $menu_kalkulasi[] = $menu;
+        }
+
+        // 4. KIRIM DATA "PINTAR" ($menus) KE VIEW
+        $menus = $menu_kalkulasi;
+        // =========================================================
+        // LOGIKA "PINTAR" SELESAI
+        // =========================================================
+
+        // Ambil daftar pesanan (ini tidak berubah)
         $daftar_pesanan = $this->pesananModel->getAllPesanan();
 
         include './views/pos/pos_kasir.php';

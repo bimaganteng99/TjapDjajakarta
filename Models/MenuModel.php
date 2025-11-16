@@ -3,10 +3,14 @@ class MenuModel
 {
     private $conn;
     private $table = 'menu';
+    private $bahanBakuModel; // Kita butuh ini
+    private $resepModel;     // Kita butuh ini
 
     public function __construct($db)
     {
         $this->conn = $db;
+        $this->bahanBakuModel = new BahanBakuModel($db);
+        $this->resepModel = new ResepModel($db);
     }
 
     public function getAllMenus()
@@ -19,6 +23,48 @@ class MenuModel
         $st = $this->conn->prepare($sql);
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllMenusWithCalculatedStock()
+    {
+        // 1. Ambil semua menu (kecuali yg diarsipkan)
+        $semua_menu = $this->getAllMenus(); // Memakai fungsi di atas
+
+        // 2. Ambil stok bahan (sekali saja, untuk efisiensi)
+        $stok_bahan = $this->bahanBakuModel->getAllBahanBakuIndexed();
+
+        $menu_kalkulasi = [];
+
+        // 3. Loop setiap menu dan kalkulasi ulang statusnya
+        foreach ($semua_menu as $menu) {
+            $status_kalkulasi = $menu['status']; // Ambil status manual (tersedia/habis)
+
+            // Hanya cek resep jika status manualnya 'tersedia'
+            if ($status_kalkulasi == 'tersedia') {
+                $resep = $this->resepModel->getResepByIdMenu($menu['id_menu']);
+
+                if (!empty($resep)) {
+                    // Jika menu ini punya resep, cek stok bahannya
+                    foreach ($resep as $item) {
+                        $id_bahan = $item['id_bahan'];
+                        $butuh = (float)$item['jumlah_dibutuhkan'];
+                        $tersedia = $stok_bahan[$id_bahan] ?? 0; // Stok bahan saat ini
+
+                        if ($tersedia < $butuh) {
+                            // JIKA SATU BAHAN SAJA KURANG, timpa statusnya!
+                            $status_kalkulasi = 'habis';
+                            break; // Stop cek resep ini, lanjut ke menu berikutnya
+                        }
+                    }
+                }
+            }
+
+            // 4. Masukkan status baru (hasil kalkulasi) ke array menu
+            $menu['status'] = $status_kalkulasi;
+            $menu_kalkulasi[] = $menu;
+        }
+
+        return $menu_kalkulasi;
     }
 
     /** Ambil satu menu (termasuk BLOB) */
