@@ -17,12 +17,16 @@ $menus = $menus ?? [];
 <body>
 
   <?php include './views/layout/navbar.php'; ?>
+<<<<<<< HEAD
   
   <div class="page-container">
   <h2>🍽️ Manajemen Menu</h2>
   <p>Anda login sebagai <strong>Manajer</strong></p>
 
   <div class="card">
+=======
+
+>>>>>>> de839bf212a9eab720188cc84b4e46b2046603f7
   <h3>Tambah Menu Baru</h3>
 
   <div class="form-table">

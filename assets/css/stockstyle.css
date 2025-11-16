@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f7f7f7;
+  color: #333;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+h2,
+h3 {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+/* Card Section */
+.form-tambah,
+.table-stok {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  transition: 0.2s;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #c08457; /* coklat lembut */
+  box-shadow: 0 0 4px rgba(192, 132, 87, 0.4);
+}
+
+/* Button coklat */
+button,
+input[type="submit"] {
+  padding: 10px 14px;
+  background-color: #b7791f; /* Coklat emas */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.2s;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #975a16;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+th {
+  background: #f3f3f3;
+  padding: 12px;
+  font-weight: 600;
+  border-bottom: 2px solid #ddd;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover td {
+  background: #fafafa;
+}
+
+/* Input di tabel (update stok) */
+.table-stok input[type="number"] {
+  width: 90px;
+}

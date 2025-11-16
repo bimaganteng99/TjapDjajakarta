@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #ffffff; /* BG PUTIH */
+  color: #333;
+}
+
+.container {
+  padding: 30px 40px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+thead {
+  background: #f5f5f5;
+}
+
+th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+td {
+  padding: 12px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+tbody tr:hover {
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+/* Dropdown */
+select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 14px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: 2px solid #dcb18c; /* warna coklat soft biar nyambung tema makanan */
+}
