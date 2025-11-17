@@ -86,6 +86,11 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
 
             <?php if (!$isKasir): ?>
               <form class="mini-form" action="index.php?action=tambah_pesanan" method="POST">
+                <input type="hidden" name="id_menu" value="<?= (int)$menu['id_menu'] ?>">
+                <input type="number" name="jumlah" value="1" min="1" required style="width:40px;">
+                <input type="hidden" name="jenis_pesanan" value="dine in">
+                <input type="text" name="catatan" placeholder="Catatan (opsional)">
+                <button type="submit">Pesan</button>
               </form>
             <?php endif; ?>
 
@@ -187,6 +192,10 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
   </div>
   <div id="toast-notification"></div>
 
+  <script>
+    // Set global JS variable agar JS tahu role user
+    window.isKasir = <?= json_encode($isKasir) ?>;
+  </script>
 
   <?php if ($isKasir): ?>
     <script>
@@ -292,6 +301,16 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
 
         // Helper: generate innerHTML card tersedia
         function getCardTersediaHTML() {
+          let formPelanggan = '';
+          if (!window.isKasir) {
+            formPelanggan = `<form class="mini-form" action="index.php?action=tambah_pesanan" method="POST">
+              <input type="hidden" name="id_menu" value="${idMenu}">
+              <input type="number" name="jumlah" value="1" min="1" required style="width:40px;"> 
+              <input type="hidden" name="jenis_pesanan" value="dine in">
+              <input type="text" name="catatan" placeholder="Catatan (opsional)">
+              <button type="submit">Pesan</button>
+            </form>`;
+          }
           return `
             <div class="image-wrapper">
               <img src="index.php?action=image_menu&id=${idMenu}" alt="${displayName}">
@@ -300,6 +319,7 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
             <h4>${displayName}</h4>
             <p class="desc">${deskripsi ? deskripsi : '-'}</p>
             <span class="status tersedia">Tersedia</span>
+            ${formPelanggan}
           `;
         }
         // Helper: generate innerHTML card habis
