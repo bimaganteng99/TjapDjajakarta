@@ -15,7 +15,11 @@ include_once './controllers/NotificationController.php';
 require_once './controllers/VerifikasiController.php';
 require_once './controllers/StockController.php';
 require_once './controllers/ResepController.php';
+require_once './controllers/MembershipController.php';
 
+// Tambahkan koneksi global untuk controller yang butuh $conn
+$database = new Database();
+$conn = $database->getConnection();
 
 $authController = new AuthController();
 $menuController = new MenuController();
@@ -146,21 +150,37 @@ switch ($action) {
 
     //membership
     case 'membership':
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pelanggan') {
+            header('Location: index.php?action=login');
+            exit();
+        }
         $controller = new MembershipController($conn);
         $controller->index();
         break;
 
     case 'tambah_member':
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pelanggan') {
+            header('Location: index.php?action=login');
+            exit();
+        }
         $controller = new MembershipController($conn);
         $controller->tambah();
         break;
 
     case 'edit_member':
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pelanggan') {
+            header('Location: index.php?action=login');
+            exit();
+        }
         $controller = new MembershipController($conn);
         $controller->edit();
         break;
 
     case 'hapus_member':
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'pelanggan') {
+            header('Location: index.php?action=login');
+            exit();
+        }
         $controller = new MembershipController($conn);
         $controller->hapus();
         break;

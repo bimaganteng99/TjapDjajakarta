@@ -13,52 +13,6 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
   <meta charset="UTF-8">
   <title>POS Kasir</title>
   <link rel="stylesheet" href="assets/css/posstyle.css">
-
-  <style>
-    #toast-notification {
-      visibility: hidden;
-      min-width: 250px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 5px;
-      padding: 16px;
-      position: fixed;
-      z-index: 100;
-      right: 30px;
-      top: 30px;
-      font-size: 17px;
-    }
-
-    #toast-notification.show {
-      visibility: visible;
-      animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-
-    @keyframes fadein {
-      from {
-        top: 0;
-        opacity: 0;
-      }
-
-      to {
-        top: 30px;
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeout {
-      from {
-        top: 30px;
-        opacity: 1;
-      }
-
-      to {
-        top: 0;
-        opacity: 0;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -108,7 +62,11 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
           <div class="menu-card habis-card"
             id="menu-habis-<?= $menu['id_menu'] ?>"
             data-menu-id="<?= $menu['id_menu'] ?>">
-
+            <div class="image-wrapper">
+              <img src="index.php?action=image_menu&id=<?= (int)$menu['id_menu'] ?>" alt="<?= htmlspecialchars($menu['nama']) ?>">
+            </div>
+            <h4><?= htmlspecialchars($menu['nama']) ?></h4>
+            <span class="status habis">Habis</span>
           </div>
         <?php endif; ?>
       <?php endforeach; ?>

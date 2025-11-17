@@ -83,6 +83,7 @@
             <?php elseif ($_SESSION['user_role'] == 'pelanggan'): ?>
                 <li><a class="<?= ($_GET['action'] == 'pos_kasir') ? 'active' : '' ?>" href="index.php?action=pos_kasir">POS</a></li>
                 <li><a class="<?= ($_GET['action'] == 'pembayaran') ? 'active' : '' ?>" href="index.php?action=pembayaran">Pembayaran</a></li>
+                <li><a class="<?= ($_GET['action'] == 'membership') ? 'active' : '' ?>" href="index.php?action=membership">Membership</a></li>
 
             <?php elseif ($_SESSION['user_role'] == 'operasional'): ?>
                 <!-- <li><a href="index.php?action=pos_kasir">POS</a></li> -->
