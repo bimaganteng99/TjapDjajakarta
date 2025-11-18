@@ -16,6 +16,7 @@ require_once './controllers/VerifikasiController.php';
 require_once './controllers/StockController.php';
 require_once './controllers/ResepController.php';
 require_once './controllers/MembershipController.php';
+require_once './controllers/PembayaranController.php';
 
 // Tambahkan koneksi global untuk controller yang butuh $conn
 $database = new Database();
@@ -29,6 +30,7 @@ $notificationController = new NotificationController();
 $verifikasiController = new VerifikasiController();
 $stockController = new StockController();
 $resepController = new ResepController();
+$pembayaranController = new PembayaranController($conn);
 
 // Ambil parameter action
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
@@ -67,7 +69,7 @@ switch ($action) {
         $authController->showManajemenAkun();
         break;
     case 'pembayaran':
-        $authController->showPembayaran();
+        $pembayaranController->showPembayaran();
         break;
     case 'verifikasi_pickup':
         $verifikasiController->showVerifikasiPage(); // Panggil method baru
@@ -183,6 +185,13 @@ switch ($action) {
         }
         $controller = new MembershipController($conn);
         $controller->hapus();
+        break;
+
+    case 'pembayaran':
+        $pembayaranController->showPembayaran();
+        break;
+    case 'proses_pembayaran':
+        $pembayaranController->prosesPembayaran();
         break;
 
     default:

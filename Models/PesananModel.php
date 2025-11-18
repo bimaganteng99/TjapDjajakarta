@@ -17,7 +17,7 @@ class PesananModel
         // 2. Tambahkan 'kode_pesanan' di query
         $query = "INSERT INTO {$this->table} 
                   (kode_pesanan, id_akun, id_menu, jumlah, total_harga, jenis_pesanan, catatan, status_pesanan, created_at)
-                  VALUES (:kode_pesanan, :id_akun, :id_menu, :jumlah, :total_harga, :jenis_pesanan, :catatan, 'menunggu', NOW())";
+                  VALUES (:kode_pesanan, :id_akun, :id_menu, :jumlah, :total_harga, :jenis_pesanan, :catatan, 'menunggu pembayaran', NOW())";
 
         $stmt = $this->conn->prepare($query);
 
@@ -95,5 +95,33 @@ class PesananModel
         }
 
         return null; // Kembalikan null jika tidak ada
+    }
+
+    // Ambil pesanan user yang statusnya menunggu pembayaran atau menunggu
+    public function getPesananMenungguPembayaran($id_akun)
+    {
+        $query = "SELECT p.*, m.nama AS nama_menu, m.harga 
+                  FROM {$this->table} p
+                  JOIN menu m ON p.id_menu = m.id_menu
+                  WHERE p.id_akun = :id_akun AND (p.status_pesanan = 'menunggu pembayaran' OR p.status_pesanan = 'menunggu')
+                  ORDER BY p.created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_akun', $id_akun, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Untuk kasir: ambil semua pesanan menunggu pembayaran (dari semua pelanggan)
+    public function getSemuaPesananMenungguPembayaran()
+    {
+        $query = "SELECT p.*, m.nama AS nama_menu, m.harga, u.username
+                  FROM {$this->table} p
+                  JOIN menu m ON p.id_menu = m.id_menu
+                  JOIN akun u ON p.id_akun = u.id_akun
+                  WHERE (p.status_pesanan = 'menunggu pembayaran' OR p.status_pesanan = 'menunggu')
+                  ORDER BY p.created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

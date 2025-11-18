@@ -8,18 +8,21 @@ if (session_status() == PHP_SESSION_NONE) {
 include_once './config/Database.php';
 include_once './models/UserModel.php';
 include_once './models/MenuModel.php';
+include_once './models/PesananModel.php';
 
 class AuthController
 {
     private $db;
     private $userModel;
     private $menuModel;
+    private $pesananModel;
 
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $this->userModel = new User($this->db);
+        $this->pesananModel = new User($this->db);
     }
 
     public function showLogin()
@@ -184,14 +187,27 @@ class AuthController
     }
 
     // kasir
-    public function showPembayaran()
-    {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: index.php?action=login');
-            exit();
-        }
-        include './views/pembayaran/pembayaran.php';
-    }
+    // controllers/AuthController.php
+
+    // public function showPembayaran()
+    // {
+    //     // 1. Cek Login (Sudah ada)
+    //     if (!isset($_SESSION['user_id'])) {
+    //         header('Location: index.php?action=login');
+    //         exit();
+    //     }
+    //     // ============================================================
+    //     // 2. (TAMBAHAN PENTING) Ambil Data Pesanan Dulu!
+    //     // ============================================================
+    //     $id_akun = $_SESSION['user_id'];
+    //     // Panggil model untuk mengambil data
+    //     // Pastikan method getPesananMenungguPembayaran sudah ada di PesananModel
+    //     $pesanan = $this->pesananModel->getPesananMenungguPembayaran($id_akun);
+    //     // ============================================================
+    //     // 3. Buka View (Sekarang variabel $pesanan sudah tersedia)
+    //     include './views/pembayaran/pembayaran.php';
+    // }
+
     // public function showVerfikasiPickUp()
     // {
     //     if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'kasir') {
