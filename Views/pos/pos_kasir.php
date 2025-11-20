@@ -11,7 +11,7 @@ $isKasir = ($_SESSION['user_role'] === 'kasir');
 
 <head>
   <meta charset="UTF-8">
-  <title>POS Kasir</title>
+  <title>POS</title>
   <link rel="stylesheet" href="assets/css/posstyle.css">
 </head>
 
